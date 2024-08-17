@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "362958169527",
+    "project_id": "workout-application-a1ff4",
+    "storage_bucket": "workout-application-a1ff4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362958169527:android:26766d8b29fd8b3d4fb432",
+        "android_client_info": {
+          "package_name": "com.example.flutter_workout_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLN4u7CiW9pxPpEn7PxDP1nh6kHqk6sSI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
