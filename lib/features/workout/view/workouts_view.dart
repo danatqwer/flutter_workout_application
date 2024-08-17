@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_workout_application/app/router/utils/constants/main_routes.dart';
 import 'package:flutter_workout_application/features/workout/bloc/workouts_bloc/workouts_bloc.dart';
 import 'package:flutter_workout_application/features/workout/bloc/workouts_bloc/workouts_state.dart';
+import 'package:go_router/go_router.dart';
 
 class WorkoutsView extends StatelessWidget {
   const WorkoutsView({super.key});
@@ -10,13 +12,14 @@ class WorkoutsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workout'),
+        title: const Text('Workouts'),
       ),
       body: const SafeArea(
         child: _WorkoutReorderableListView(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => context.go(MainRoutes.workoutAdd),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -50,7 +53,7 @@ class _WorkoutReorderableListView extends StatelessWidget {
             state = state as WorkoutsSuccessState;
             final workouts = state.workouts;
             final itemCount = workouts.length;
-            return ReorderableListView.builder(
+            return ListView.builder(
               itemBuilder: (context, index) {
                 final workout = workouts[index];
                 return ListTile(
@@ -60,7 +63,6 @@ class _WorkoutReorderableListView extends StatelessWidget {
                 );
               },
               itemCount: itemCount,
-              onReorder: (oldIndex, newIndex) {},
             );
         }
       },

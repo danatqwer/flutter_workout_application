@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_workout_application/app/router/utils/constants/main_routes.dart';
 import 'package:flutter_workout_application/features/workout/bloc/workout_add_bloc/workout_add_bloc.dart';
 import 'package:flutter_workout_application/features/workout/bloc/workout_add_bloc/workout_add_event.dart';
+import 'package:go_router/go_router.dart';
 import 'package:workout_repository/workout_repository.dart';
 
 class WorkoutAddView extends StatelessWidget {
@@ -12,8 +14,13 @@ class WorkoutAddView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add workout'),
+        leading: IconButton(
+          onPressed: () => context.go(MainRoutes.workouts),
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: const SafeArea(
+        minimum: EdgeInsets.symmetric(horizontal: 16),
         child: _Form(),
       ),
     );
@@ -67,7 +74,7 @@ class _FormState extends State<_Form> {
                 bloc.add(event);
               }
             },
-            child: const Text('Sign In'),
+            child: const Text('Add'),
           ),
         ],
       ),
