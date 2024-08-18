@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_workout_application/features/auth/sign_in/repository/auth_repository.dart';
+import 'package:flutter_workout_application/src/features/auth/sign_in/repository/auth_repository.dart';
 
 class SignInViewModel {
   final _authRepository = AuthRepository();

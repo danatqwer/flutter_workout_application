@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_workout_application/app/router/utils/constants/main_routes.dart';
-import 'package:flutter_workout_application/features/workout/bloc/workout_add_bloc/workout_add_bloc.dart';
-import 'package:flutter_workout_application/features/workout/bloc/workout_add_bloc/workout_add_event.dart';
+import 'package:flutter_workout_application/src/app/router/utils/constants/main_route_names.dart';
+import 'package:flutter_workout_application/src/features/workout/bloc/workout_add_bloc/workout_add_bloc.dart';
+import 'package:flutter_workout_application/src/features/workout/bloc/workout_add_bloc/workout_add_event.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_repository/workout_repository.dart';
 
@@ -15,7 +15,7 @@ class WorkoutAddView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Add workout'),
         leading: IconButton(
-          onPressed: () => context.go(MainRoutes.workouts),
+          onPressed: () => context.go(MainRouteNames.workouts),
           icon: const Icon(Icons.arrow_back),
         ),
       ),
