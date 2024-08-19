@@ -1,39 +1,27 @@
 import 'package:equatable/equatable.dart';
 import 'package:workout_repository/workout_repository.dart';
 
-enum WorkoutListStateStatus { initial, loading, failure, success }
-
 sealed class WorkoutListState extends Equatable {
-  final WorkoutListStateStatus status;
-
-  const WorkoutListState(this.status);
+  const WorkoutListState();
 
   @override
   List<Object?> get props => [];
 }
 
-final class WorkoutListInitialState extends WorkoutListState {
-  const WorkoutListInitialState() : super(WorkoutListStateStatus.initial);
-}
+final class WorkoutListInitialState extends WorkoutListState {}
 
-final class WorkoutListLoadingState extends WorkoutListState {
-  const WorkoutListLoadingState() : super(WorkoutListStateStatus.loading);
-}
+final class WorkoutListLoadingState extends WorkoutListState {}
 
 final class WorkoutListFailureState extends WorkoutListState {
   final String message;
 
-  const WorkoutListFailureState(
-    this.message,
-  ) : super(WorkoutListStateStatus.failure);
+  const WorkoutListFailureState(this.message);
 }
 
 final class WorkoutListSuccessState extends WorkoutListState {
   final List<Workout> workouts;
 
-  const WorkoutListSuccessState(
-    this.workouts,
-  ) : super(WorkoutListStateStatus.success);
+  const WorkoutListSuccessState(this.workouts);
 
   @override
   List<Workout> get props => workouts;

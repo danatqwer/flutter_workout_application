@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_bloc/workout_event.dart';
@@ -36,7 +34,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       emit(successState);
     } catch (e) {
       final message = e.toString();
-      log(message);
       final failureState = WorkoutFailureState(message);
       emit(failureState);
     }

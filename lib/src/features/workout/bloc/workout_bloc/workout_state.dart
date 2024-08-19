@@ -30,15 +30,15 @@ final class WorkoutSuccessState extends WorkoutState {
     this.workoutStarted = false,
   });
 
-  // WorkoutSuccessState copyWith({
-  //   Workout? workout,
-  //   int? selectedIndex,
-  //   bool? workoutStarted,
-  // }) {
-  //   return WorkoutSuccessState(
-  //     workout: workout ?? this.workout,
-  //     selectedIndex: selectedIndex ?? this.selectedIndex,
-  //     workoutStarted: workoutStarted ?? this.workoutStarted,
-  //   );
-  // }
+  WorkoutSuccessState copyWith({
+    Workout? workout,
+    int? selectedIndex,
+    bool? workoutStarted,
+  }) {
+    return WorkoutSuccessState(
+      workout: workout ?? this.workout,
+      selectedIndex: selectedIndex ?? this.selectedIndex,
+      workoutStarted: workoutStarted ?? this.workoutStarted,
+    );
+  }
 }
