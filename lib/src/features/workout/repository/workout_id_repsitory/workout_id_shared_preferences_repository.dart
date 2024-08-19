@@ -7,7 +7,7 @@ class WorkoutIdSharedPreferencesRepsitory extends WorkoutIdRepository {
   @override
   Future<void> set(String id) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString(_key, id);
+    await sharedPreferences.setString(_key, id);
   }
 
   @override
@@ -20,5 +20,11 @@ class WorkoutIdSharedPreferencesRepsitory extends WorkoutIdRepository {
     }
 
     return id;
+  }
+
+  @override
+  Future<void> remove() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.remove(_key);
   }
 }

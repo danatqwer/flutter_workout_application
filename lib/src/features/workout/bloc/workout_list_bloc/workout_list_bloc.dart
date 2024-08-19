@@ -31,6 +31,8 @@ class WorkoutListBloc extends Bloc<WorkoutListBlocEvent, WorkoutListBlocState> {
     final loadingState = WorkoutListBlocLoadingState();
     emit(loadingState);
     try {
+      await workoutIdService.remove();
+      
       final workouts = await workoutRepository.getList();
       final successState = WorkoutListBlocSuccessState(workouts);
       emit(successState);
