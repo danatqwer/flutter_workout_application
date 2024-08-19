@@ -6,8 +6,8 @@ import 'package:flutter_workout_application/src/features/workout/bloc/workout_ad
 import 'package:go_router/go_router.dart';
 import 'package:workout_repository/workout_repository.dart';
 
-class AddWorkoutView extends StatelessWidget {
-  const AddWorkoutView({super.key});
+class WorkoutAddView extends StatelessWidget {
+  const WorkoutAddView({super.key});
 
   @override
   Widget build(BuildContext context) {

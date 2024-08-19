@@ -7,7 +7,7 @@ import 'package:flutter_workout_application/src/features/workout/bloc/workout_li
 import 'package:flutter_workout_application/src/features/workout/repository/workout_id_repsitory/workout_id_shared_preferences_repository.dart';
 import 'package:flutter_workout_application/src/features/workout/repository/workout_id_repsitory/workout_id_repository.dart';
 import 'package:flutter_workout_application/src/features/workout/view/workout_view.dart';
-import 'package:flutter_workout_application/src/features/workout/view/add_workout_view.dart';
+import 'package:flutter_workout_application/src/features/workout/view/workout_add_view.dart';
 import 'package:flutter_workout_application/src/features/workout/view/workout_list_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_repository/workout_repository.dart';
@@ -54,7 +54,7 @@ class MainRouter {
         name: MainRoutes.workoutAddName,
         builder: (context, state) => BlocProvider(
           create: (context) => WorkoutAddBloc(workoutRepository),
-          child: const AddWorkoutView(),
+          child: const WorkoutAddView(),
         ),
       ),
       GoRoute(
