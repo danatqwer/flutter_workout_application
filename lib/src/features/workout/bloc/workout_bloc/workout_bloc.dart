@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_bloc/workout_event.dart';
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_bloc/workout_state.dart';
-import 'package:flutter_workout_application/src/features/workout/service/workout_service/workout_id_service.dart';
+import 'package:flutter_workout_application/src/features/workout/repository/workout_id_repsitory/workout_id_repository.dart';
 import 'package:workout_repository/workout_repository.dart';
 
 class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
@@ -12,7 +14,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   WorkoutBloc({
     required this.workoutRepository,
     required this.workoutIdService,
-  }) : super( const WorkoutInitialState()) {
+  }) : super(WorkoutInitialState()) {
     on<WorkoutEvent>(
       (event, emit) async {
         if (event is WorkoutInitializeEvent) {
@@ -20,10 +22,12 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         }
       },
     );
+
+    add(WorkoutInitializeEvent());
   }
 
   Future<void> _onInitializeWorkout(Emitter<WorkoutState> emit) async {
-    const loadingState = WorkoutLoadingState();
+    final loadingState = WorkoutLoadingState();
     emit(loadingState);
     try {
       final id = await workoutIdService.get();
@@ -31,7 +35,9 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       final successState = WorkoutSuccessState(workout: workout);
       emit(successState);
     } catch (e) {
-      final failureState = WorkoutFailureState(e.toString());
+      final message = e.toString();
+      log(message);
+      final failureState = WorkoutFailureState(message);
       emit(failureState);
     }
   }

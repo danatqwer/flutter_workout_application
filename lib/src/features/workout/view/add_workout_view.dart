@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_workout_application/src/app/router/utils/constants/main_route_names.dart';
+import 'package:flutter_workout_application/src/app/router/main_router.dart';
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_add_bloc/workout_add_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_add_bloc/workout_add_event.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_repository/workout_repository.dart';
 
-class WorkoutAddView extends StatelessWidget {
-  const WorkoutAddView({super.key});
+class AddWorkoutView extends StatelessWidget {
+  const AddWorkoutView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add workout'),
-        leading: IconButton(
-          onPressed: () => context.go(MainRouteNames.workouts),
-          icon: const Icon(Icons.arrow_back),
+        leading: BackButton(
+          onPressed: () => context.go(MainRoutes.workoutListPath),
         ),
       ),
       body: const SafeArea(
-        minimum: EdgeInsets.symmetric(horizontal: 16),
+        minimum: EdgeInsets.symmetric(horizontal: 24),
         child: _Form(),
       ),
     );
@@ -37,51 +36,80 @@ class _Form extends StatefulWidget {
 class _FormState extends State<_Form> {
   final _formKey = GlobalKey<FormState>();
 
+  final _nameTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<WorkoutAddBloc>();
 
-    final nameTextController = TextEditingController();
-
     return Form(
       key: _formKey,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
-            controller: nameTextController,
-            decoration: const InputDecoration(labelText: 'Name'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please fill Name field';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: () {
-              final currentState = _formKey.currentState;
-              if (currentState == null) return;
-              if (currentState.validate()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('In Progress')),
-                );
-
-                final name = nameTextController.text;
-                final workout = Workout(name: name, items: []);
-                final event = AddWorkoutEvent(workout);
-                bloc.add(event);
-              }
-            },
-            child: const Text('Add'),
+          _NameTextFormField(controller: _nameTextController),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerRight,
+            child: _AddButton(onPressed: () => submit(bloc)),
           ),
         ],
       ),
     );
   }
+
+  void submit(WorkoutAddBloc bloc) {
+    final currentState = _formKey.currentState!;
+    if (!currentState.validate()) return;
+
+    final name = _nameTextController.text;
+    final workout = Workout(name: name, items: []);
+
+    bloc.add(AddWorkoutEvent(workout));
+
+    context.go(MainRoutes.workoutListPath);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Workout added')),
+    );
+  }
 }
 
+class _NameTextFormField extends StatelessWidget {
+  const _NameTextFormField({required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      decoration: const InputDecoration(labelText: 'Name'),
+      validator: (value) => _validator(value),
+    );
+  }
+
+  String? _validator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please fill Name field';
+    }
+    return null;
+  }
+}
+
+class _AddButton extends StatelessWidget {
+  const _AddButton({required this.onPressed});
+
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => onPressed(),
+      child: const Text('Add'),
+    );
+  }
+}
 
 
 // class _WorkoutItemTypeChip extends StatefulWidget {

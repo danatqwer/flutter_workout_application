@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:workout_repository/workout_repository.dart';
 import 'package:bloc/bloc.dart';
 
@@ -16,7 +18,9 @@ class WorkoutAddBloc extends Bloc<WorkoutAddEvent, WorkoutAddState> {
         const successState = WorkoutAddSuccess('Workout added successfully.');
         emit(successState);
       } catch (e) {
-        final failureState = WorkoutAddFailure(e.toString());
+        final message = e.toString();
+        log(message);
+        final failureState = WorkoutAddFailure(message);
         emit(failureState);
       }
     });

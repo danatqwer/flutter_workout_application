@@ -1,7 +1,7 @@
-import 'package:flutter_workout_application/src/features/workout/service/workout_service/workout_id_service.dart';
+import 'package:flutter_workout_application/src/features/workout/repository/workout_id_repsitory/workout_id_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPreferencesWorkoutIdService extends WorkoutIdRepository {
+class WorkoutIdSharedPreferencesRepsitory extends WorkoutIdRepository {
   final _key = 'workout_id';
 
   @override

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_workout_application/src/app/router/main_router.dart';
+import 'package:flutter_workout_application/src/features/workout/bloc/workout_bloc/workout_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_bloc/workout_state.dart';
 import 'package:flutter_workout_application/src/features/workout/view/widgets/workout_item_widget/workout_item_widget.dart';
+import 'package:go_router/go_router.dart';
 import 'package:workout_repository/workout_repository.dart';
 
 class WorkoutView extends StatelessWidget {
@@ -12,6 +15,9 @@ class WorkoutView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const _AppBarTitle(),
+        leading: BackButton(
+          onPressed: () => context.go(MainRoutes.workoutListPath),
+        ),
       ),
       body: const SafeArea(
         child: _WorkoutItemsWrapWidget(),
@@ -25,26 +31,14 @@ class _AppBarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(builder: (context, state) {
-      const initialWidget = SizedBox();
-
-      const loadingWidget = Text('Loading...');
-
-      final failureState = state as WorkoutFailureState;
-      final failureMessage = failureState.message;
-      final failureWidget = Text(failureMessage);
-
-      final successState = state as WorkoutSuccessState;
-      final successWorkoutName = successState.workout.name;
-      final successWidget = Text(successWorkoutName);
-
-      return switch (state.status) {
-        WorkoutStateStatus.initial => initialWidget,
-        WorkoutStateStatus.loading => loadingWidget,
-        WorkoutStateStatus.failure => failureWidget,
-        WorkoutStateStatus.success => successWidget,
-      };
-    });
+    return BlocBuilder<WorkoutBloc, WorkoutState>(
+      builder: (context, state) => switch (state) {
+        WorkoutLoadingState _ => const Text('Loading...'),
+        WorkoutFailureState _ => Text(state.message),
+        WorkoutSuccessState _ => Text(state.workout.name),
+        _ => const SizedBox(),
+      },
+    );
   }
 }
 
@@ -53,26 +47,16 @@ class _WorkoutItemsWrapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
-      builder: (context, state) {
-        const initialWidget = SizedBox();
-
-        const loadingText = Text('Loading...');
-        const loadingWidget = Center(child: loadingText);
-
-        final failureState = state as WorkoutFailureState;
-        final failureText = Text(failureState.message);
-        final failureWidget = Center(child: failureText);
-
-        final successState = state as WorkoutSuccessState;
-        final successWidget = _WorkoutItemsWidget(successState);
-
-        return switch (state.status) {
-          WorkoutStateStatus.initial => initialWidget,
-          WorkoutStateStatus.loading => loadingWidget,
-          WorkoutStateStatus.failure => failureWidget,
-          WorkoutStateStatus.success => successWidget,
-        };
+    return BlocBuilder<WorkoutBloc, WorkoutState>(
+      builder: (context, state) => switch (state) {
+        WorkoutLoadingState _ => const Center(
+            child: Text('Loading...'),
+          ),
+        WorkoutFailureState _ => Center(
+            child: Text(state.message),
+          ),
+        WorkoutSuccessState _ => _WorkoutItemsWidget(state),
+        _ => const SizedBox(),
       },
     );
   }
@@ -93,9 +77,9 @@ class _WorkoutItemsWidget extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       itemCount: items.length,
-      itemBuilder: (_, i) => _WorkoutItemWrapWidget(
-        item: items[i],
-        index: i,
+      itemBuilder: (context, index) => _WorkoutItemWrapWidget(
+        item: items[index],
+        index: index,
         selectedIndex: selectedIndex,
         workoutStarted: workoutStarted,
       ),
