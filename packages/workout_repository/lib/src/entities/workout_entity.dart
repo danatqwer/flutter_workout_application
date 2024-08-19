@@ -4,29 +4,22 @@ import 'package:workout_repository/src/entities/entities.dart';
 import 'package:workout_repository/src/enums/workout_item_type.dart';
 
 class WorkoutEntity {
-  final String? id;
+  final String id;
   final String name;
   final List<WorkoutItemEntity> items;
 
   const WorkoutEntity({
-    this.id,
+    required this.id,
     required this.name,
     required this.items,
   });
 
   Map<String, dynamic> toMap() {
-    if (id == null) {
-      return <String, dynamic>{
-        'name': name,
-        'items': items.map((x) => x.toMap()).where((e) => e != null).toList(),
-      };
-    } else {
-      return <String, dynamic>{
-        'id': id,
-        'name': name,
-        'items': items.map((x) => x.toMap()).where((e) => e != null).toList(),
-      };
-    }
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'items': items.map((x) => x.toMap()).where((e) => e != null).toList(),
+    };
   }
 
   factory WorkoutEntity.fromMap(Map<String, dynamic> map) {
@@ -50,13 +43,14 @@ class WorkoutEntity {
     final items = itemsMap.toList();
 
     return WorkoutEntity(
-      id: map['id'] as String?,
+      id: map['id'] as String,
       name: map['name'] as String,
       items: items,
     );
   }
+  
   @override
-  String toString() => 'WorkoutEntity(name: $name, items: $items)';
+  String toString() => 'WorkoutEntity(id: $id, name: $name, items: $items)';
 
   @override
   bool operator ==(covariant WorkoutEntity other) {

@@ -12,6 +12,7 @@ dependencies:
   cloud_firestore: ^5.2.1
   flutter:
     sdk: flutter
+  uuid: ^4.4.2
 
 dev_dependencies:
   flutter_test:

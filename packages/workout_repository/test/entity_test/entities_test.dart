@@ -48,6 +48,7 @@ void main() {
 
   test('Workout entity: to map, from map', () {
     const WorkoutEntity entity = WorkoutEntity(
+      id: 'x',
       name: 'workoutName',
       items: [
         ExerciseEntity(
@@ -63,6 +64,7 @@ void main() {
       ],
     );
     final Map<String, dynamic> map = {
+      'id': 'x',
       'name': 'workoutName',
       'items': [
         {
@@ -82,6 +84,7 @@ void main() {
 
   test('Workout entity filter: to map, from map', () {
     const WorkoutEntity entity = WorkoutEntity(
+      id: 'x',
       name: 'workoutName',
       items: [
         ExerciseEntity(
@@ -99,6 +102,7 @@ void main() {
     );
 
     const WorkoutEntity filteredEntity = WorkoutEntity(
+      id: 'x',
       name: 'workoutName',
       items: [
         ExerciseEntity(
@@ -115,6 +119,7 @@ void main() {
     );
 
     final Map<String, dynamic> map = {
+      'id': 'x',
       'name': 'workoutName',
       'items': [
         {
@@ -129,6 +134,7 @@ void main() {
       ]
     };
     final Map<String, dynamic> filteredMap = {
+      'id': 'x',
       'name': 'workoutName',
       'items': [
         {

@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:workout_repository/workout_repository.dart';
 
@@ -11,7 +11,7 @@ Future<void> main() async {
     final mockWorkoutList = helper.mockWorkoutList;
     await helper.fillMockCollection(mockWorkoutList);
 
-    final actual = await helper.repository.getList(docId: false);
+    final actual = await helper.repository.getList();
     final matcher = mockWorkoutList;
 
     expect(actual, matcher);
@@ -25,14 +25,10 @@ Future<void> main() async {
 
     final workoutList = await helper.repository.getList();
     final workout = workoutList[0];
-
     final id = workout.id;
-    if (id == null) {
-      throw ArgumentError.notNull('Workout id');
-    }
 
     final actual = await helper.repository.get(id);
-    final matcher = workout;
+    final matcher = mockWorkoutList.firstWhere((e) => e.id == id);
 
     expect(actual, matcher);
   });
@@ -43,10 +39,11 @@ Future<void> main() async {
     final mockWorkoutList = helper.mockWorkoutList;
     await helper.fillMockCollection(mockWorkoutList);
 
-    await helper.repository.set(helper.mockWorkout);
-    final workoutList = await helper.repository.getList(docId: false);
+    final workout = helper.mockWorkout;
+    await helper.repository.set(workout);
+    mockWorkoutList.add(workout);
 
-    mockWorkoutList.add(helper.mockWorkout);
+    final workoutList = await helper.repository.getList();
 
     final actual = workoutList;
     final matcher = mockWorkoutList;
@@ -54,23 +51,46 @@ Future<void> main() async {
     expect(actual, matcher);
   });
 
+  test('Update workout in firestore', () async {
+    final helper = _TestHelper();
+
+    final mockWorkoutList = helper.mockWorkoutList;
+    await helper.fillMockCollection(mockWorkoutList);
+
+    final workout = mockWorkoutList[0];
+    final newWorkout = Workout(
+      id: workout.id,
+      name: 'newname',
+      items: workout.items,
+    );
+    
+    await helper.repository.update(newWorkout);
+    mockWorkoutList[0] = newWorkout;
+
+    final updatedWorkoutListActual = await helper.repository.getList();
+    final updatedWorkoutListMatcher = mockWorkoutList;
+
+    final actual = updatedWorkoutListActual;
+    final matcher = updatedWorkoutListMatcher;
+
+    expect(actual, matcher);
+  });
+
   test('Delete workout in firestore', () async {
     final helper = _TestHelper();
-    await helper.fillMockCollection(helper.mockWorkoutList);
+
+    final mockWorkoutList = helper.mockWorkoutList;
+    await helper.fillMockCollection(mockWorkoutList);
 
     final workoutList = await helper.repository.getList();
     final workout = workoutList[0];
     final id = workout.id;
-    if (id == null) {
-      return isFalse;
-    }
-
-    workoutList.removeWhere((e) => e.id == id);
 
     await helper.repository.delete(id);
+    mockWorkoutList.removeWhere((e) => e.id == id);
 
     final actual = await helper.repository.getList();
-    final matcher = workoutList;
+    final matcher = mockWorkoutList;
 
     expect(actual, matcher);
   });
@@ -82,20 +102,30 @@ class _TestHelper {
   FirestoreWorkoutRepository get repository =>
       FirestoreWorkoutRepository(firestore);
 
-  CollectionReference get collection =>
-      firestore.collection(repository.collection.path);
-
   Exercise get mockExercise {
     return const Exercise(
-        id: 'i', name: 'n', type: ExerciseType.repeats, value: 20);
+      id: 'i',
+      name: 'n',
+      type: ExerciseType.repeats,
+      value: 20,
+    );
   }
 
   RestTimer get mockRestTimer {
-    return const RestTimer(id: 'i', duration: 40);
+    return const RestTimer(
+      id: 'i',
+      duration: 40,
+    );
   }
 
   Workout get mockWorkout {
-    return Workout(id: 'i', name: 'n', items: [mockExercise, mockRestTimer]);
+    const uuid = Uuid();
+    final id = uuid.v7();
+    return Workout(
+      id: id,
+      name: 'n',
+      items: [mockExercise, mockRestTimer],
+    );
   }
 
   List<Workout> get mockWorkoutList {
@@ -105,7 +135,7 @@ class _TestHelper {
   Future<void> fillMockCollection(List<Workout> mockWorkoutList) async {
     final collection = firestore.collection(repository.collection.path);
     for (var workout in mockWorkoutList) {
-      await collection.add(workout.toEntity().toMap());
+      collection.doc(workout.id).set(workout.toEntity().toMap());
     }
   }
 }

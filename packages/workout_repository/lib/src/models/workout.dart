@@ -11,12 +11,12 @@ import 'package:workout_repository/src/models/rest_timer.dart';
 import 'workout_item.dart';
 
 class Workout {
-  final String? id;
+  final String id;
   final String name;
   final List<WorkoutItem> items;
 
   const Workout({
-    this.id,
+    required this.id,
     required this.name,
     required this.items,
   });

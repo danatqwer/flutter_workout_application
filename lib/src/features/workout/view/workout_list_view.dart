@@ -77,10 +77,6 @@ class _WorkoutWidget extends StatelessWidget {
     final name = workout.name;
     final id = workout.id;
 
-    if (id == null) {
-      return const SizedBox();
-    }
-
     return MaterialButton(
       onPressed: () => onPressed(context, id),
       child: SizedBox(

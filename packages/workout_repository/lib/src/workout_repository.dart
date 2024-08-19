@@ -9,11 +9,15 @@ abstract class WorkoutRepository {
     throw UnimplementedError();
   }
 
+  Future<void> update(Workout workout) async {
+    throw UnimplementedError();
+  }
+
   Future<void> delete(String id) async {
     throw UnimplementedError();
   }
 
-  Future<List<Workout>> getList({bool docId = true}) async {
+  Future<List<Workout>> getList() async {
     throw UnimplementedError();
   }
 }
