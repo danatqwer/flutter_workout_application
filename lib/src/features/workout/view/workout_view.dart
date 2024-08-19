@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_workout_application/src/app/router/main_router.dart';
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_bloc/workout_bloc.dart';
-import 'package:flutter_workout_application/src/features/workout/bloc/workout_bloc/workout_state.dart';
+import 'package:flutter_workout_application/src/features/workout/bloc/workout_bloc/workout_bloc_state.dart';
 import 'package:flutter_workout_application/src/features/workout/view/widgets/workout_item_widget/workout_item_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_repository/workout_repository.dart';
@@ -31,11 +31,11 @@ class _AppBarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutBloc, WorkoutState>(
+    return BlocBuilder<WorkoutBloc, WorkoutBlocState>(
       builder: (context, state) => switch (state) {
-        WorkoutLoadingState _ => const Text('Loading...'),
-        WorkoutFailureState _ => Text(state.message),
-        WorkoutSuccessState _ => Text(state.workout.name),
+        WorkoutBlocLoadingState _ => const Text('Loading...'),
+        WorkoutBlocFailureState _ => Text(state.message),
+        WorkoutBlocSuccessState _ => Text(state.workout.name),
         _ => const SizedBox(),
       },
     );
@@ -47,15 +47,15 @@ class _WorkoutItemsWrapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutBloc, WorkoutState>(
+    return BlocBuilder<WorkoutBloc, WorkoutBlocState>(
       builder: (context, state) => switch (state) {
-        WorkoutLoadingState _ => const Center(
+        WorkoutBlocLoadingState _ => const Center(
             child: Text('Loading...'),
           ),
-        WorkoutFailureState _ => Center(
+        WorkoutBlocFailureState _ => Center(
             child: Text(state.message),
           ),
-        WorkoutSuccessState _ => _WorkoutItemsWidget(state),
+        WorkoutBlocSuccessState _ => _WorkoutItemsWidget(state),
         _ => const SizedBox(),
       },
     );
@@ -65,7 +65,7 @@ class _WorkoutItemsWrapWidget extends StatelessWidget {
 class _WorkoutItemsWidget extends StatelessWidget {
   const _WorkoutItemsWidget(this.state);
 
-  final WorkoutSuccessState state;
+  final WorkoutBlocSuccessState state;
 
   @override
   Widget build(BuildContext context) {

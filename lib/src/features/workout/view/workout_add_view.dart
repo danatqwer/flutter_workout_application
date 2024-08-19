@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_workout_application/src/app/router/main_router.dart';
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_add_bloc/workout_add_bloc.dart';
-import 'package:flutter_workout_application/src/features/workout/bloc/workout_add_bloc/workout_add_event.dart';
+import 'package:flutter_workout_application/src/features/workout/bloc/workout_add_bloc/workout_add_bloc_event.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_repository/workout_repository.dart';
 
@@ -66,7 +66,7 @@ class _FormState extends State<_Form> {
     final name = _nameTextController.text;
     final workout = Workout(name: name, items: []);
 
-    bloc.add(AddWorkoutEvent(workout));
+    bloc.add(WorkoutAddBlocAddEvent(workout));
 
     context.go(MainRoutes.workoutListPath);
     ScaffoldMessenger.of(context).showSnackBar(
