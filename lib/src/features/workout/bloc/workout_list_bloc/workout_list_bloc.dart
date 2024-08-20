@@ -8,11 +8,11 @@ import 'workout_list_bloc_state.dart';
 
 class WorkoutListBloc extends Bloc<WorkoutListBlocEvent, WorkoutListBlocState> {
   final WorkoutRepository workoutRepository;
-  final WorkoutIdRepository workoutIdService;
+  final WorkoutIdRepository workoutIdRepository;
 
   WorkoutListBloc({
     required this.workoutRepository,
-    required this.workoutIdService,
+    required this.workoutIdRepository,
   }) : super(WorkoutListBlocInitialState()) {
     on<WorkoutListBlocEvent>(
       (event, emit) async {
@@ -31,8 +31,8 @@ class WorkoutListBloc extends Bloc<WorkoutListBlocEvent, WorkoutListBlocState> {
     final loadingState = WorkoutListBlocLoadingState();
     emit(loadingState);
     try {
-      await workoutIdService.remove();
-      
+      await workoutIdRepository.remove();
+
       final workouts = await workoutRepository.getList();
       final successState = WorkoutListBlocSuccessState(workouts);
       emit(successState);
@@ -52,7 +52,7 @@ class WorkoutListBloc extends Bloc<WorkoutListBlocEvent, WorkoutListBlocState> {
       if (id == null) {
         throw ArgumentError.notNull('Workout id');
       }
-      await workoutIdService.set(id);
+      await workoutIdRepository.set(id);
     } catch (e) {
       final message = e.toString();
       final failureState = WorkoutListBlocFailureState(message);

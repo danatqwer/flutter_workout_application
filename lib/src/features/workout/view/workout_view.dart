@@ -115,7 +115,7 @@ class _WorkoutItemWrapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selected = index == selectedIndex && workoutStarted;
-    final enabled = index > selectedIndex;
+    final enabled = index >= selectedIndex;
 
     return WorkoutItemWidget(
       item: item,

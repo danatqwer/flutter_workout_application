@@ -7,11 +7,11 @@ import 'package:workout_repository/workout_repository.dart';
 
 class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
   final WorkoutRepository workoutRepository;
-  final WorkoutIdRepository workoutIdService;
+  final WorkoutIdRepository workoutIdRepository;
 
   WorkoutEditBloc({
     required this.workoutRepository,
-    required this.workoutIdService,
+    required this.workoutIdRepository,
   }) : super(WorkoutEditBlocInitialState()) {
     on<WorkoutEditBlocEvent>(
       (event, emit) async {
@@ -32,7 +32,7 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
     final loadingState = WorkoutEditBlocLoadingState();
     emit(loadingState);
     try {
-      final id = await workoutIdService.get();
+      final id = await workoutIdRepository.get();
       final workout = await workoutRepository.get(id);
       final successState = WorkoutEditBlocSuccessState(workout);
       emit(successState);

@@ -16,6 +16,10 @@ class WorkoutEditView extends StatelessWidget {
     return const Scaffold(
       appBar: _AppBar(),
       body: SafeArea(
+        minimum: EdgeInsets.symmetric(
+          horizontal: 8.0,
+          vertical: 2.0,
+        ),
         child: _WorkoutItemsWrapWidget(),
       ),
     );
@@ -23,9 +27,7 @@ class WorkoutEditView extends StatelessWidget {
 }
 
 class _AppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _AppBar({
-    super.key,
-  });
+  const _AppBar();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -37,9 +39,9 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: BackButton(
         onPressed: () => context.go(MainRoutes.workoutPath),
       ),
-      actions: [
+      actions: const [
         _SaveButton(),
-        const SizedBox(width: 8.0),
+        SizedBox(width: 2.0),
       ],
     );
   }
@@ -56,10 +58,85 @@ class _AppBarTitle extends StatelessWidget {
       builder: (context, state) => switch (state) {
         WorkoutEditBlocLoadingState _ => const Text('Loading...'),
         WorkoutEditBlocFailureState _ => Text(state.message),
-        WorkoutEditBlocSuccessState _ => Text(state.workout.name),
+        WorkoutEditBlocSuccessState _ => _EdiNameWidget(state),
         _ => const SizedBox(),
       },
     );
+  }
+}
+
+class _EdiNameWidget extends StatefulWidget {
+  const _EdiNameWidget(this.state);
+
+  final WorkoutEditBlocSuccessState state;
+
+  @override
+  State<_EdiNameWidget> createState() => _EdiNameWidgetState();
+}
+
+class _EdiNameWidgetState extends State<_EdiNameWidget> {
+  bool editing = false;
+
+  final _formKey = GlobalKey<FormState>();
+
+  final _nameTextController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final workout = widget.state.workout;
+    final name = workout.name;
+    _nameTextController.text = workout.name;
+
+    return editing
+        ? Form(
+            key: _formKey,
+            child: _NameTextFormField(
+              onPressed: () => submit(),
+              controller: _nameTextController,
+            ),
+          )
+        : GestureDetector(
+            onTap: () => setState(() => editing = !editing),
+            child: Text(name),
+          );
+  }
+
+  void submit() {
+    final currentState = _formKey.currentState!;
+    if (!currentState.validate()) return;
+
+    setState(() => editing = !editing);
+    // final name = _nameTextController.text;
+    // TODO: Implement name edit
+  }
+}
+
+class _NameTextFormField extends StatelessWidget {
+  const _NameTextFormField({
+    required this.onPressed,
+    required this.controller,
+  });
+
+  final void Function() onPressed;
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      validator: (value) => _validator(value),
+      decoration: const InputDecoration(border: InputBorder.none),
+      onEditingComplete: () => onPressed(),
+      autofocus: true,
+      style: DefaultTextStyle.of(context).style,
+    );
+  }
+
+  String? _validator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please fill this field';
+    }
+    return null;
   }
 }
 
@@ -79,10 +156,9 @@ class _SaveButton extends StatelessWidget {
           _ => null,
         };
         if (message != null) {
+          final snackBar = SnackBar(content: Text(message));
           ScaffoldMessenger.of(context).removeCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
       child: TextButton(
@@ -160,7 +236,7 @@ class _WorkoutItemAddButton extends StatelessWidget {
       height: 64,
       child: Card(
         child: MaterialButton(
-          onPressed: () {},
+          onPressed: () => context.go(MainRoutes.workoutItemAddPath),
           child: const Align(
             alignment: Alignment.center,
             child: Icon(Icons.add),
