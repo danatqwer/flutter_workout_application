@@ -1,39 +1,53 @@
+import 'package:equatable/equatable.dart';
 import 'package:workout_repository/workout_repository.dart';
 
-sealed class WorkoutEditBlocState {
+sealed class WorkoutEditBlocState extends Equatable {
   const WorkoutEditBlocState();
+
+  @override
+  List<Object> get props => [];
 }
 
 // Initialize workout
-final class WorkoutEditBlocInitialState extends WorkoutEditBlocState {}
+final class WorkoutEditBlocInitializeState extends WorkoutEditBlocState {
+  const WorkoutEditBlocInitializeState();
+}
 
-final class WorkoutEditBlocLoadingState extends WorkoutEditBlocState {}
+final class WorkoutEditBlocInitialState
+    extends WorkoutEditBlocInitializeState {}
 
-final class WorkoutEditBlocFailureState extends WorkoutEditBlocState {
+final class WorkoutEditBlocLoadingState
+    extends WorkoutEditBlocInitializeState {}
+
+final class WorkoutEditBlocFailureState extends WorkoutEditBlocInitializeState {
   final String message;
 
   const WorkoutEditBlocFailureState(this.message);
 }
 
-final class WorkoutEditBlocSuccessState extends WorkoutEditBlocState {
+final class WorkoutEditBlocSuccessState extends WorkoutEditBlocInitializeState {
   final Workout workout;
 
-  WorkoutEditBlocSuccessState(this.workout);
+  const WorkoutEditBlocSuccessState(this.workout);
 }
 
-// Update workout
-final class WorkoutEditBlocUpdateLoadingState extends WorkoutEditBlocState {}
-
-final class WorkoutEditBlocUpdateFailureState extends WorkoutEditBlocState {
-  final String message;
-
-  const WorkoutEditBlocUpdateFailureState(this.message);
+// Save workout
+final class WorkoutEditBlocSaveState extends WorkoutEditBlocState {
+  const WorkoutEditBlocSaveState();
 }
 
-final class WorkoutEditBlocUpdateSuccessState extends WorkoutEditBlocState {
+final class WorkoutEditBlocSaveLoadingState extends WorkoutEditBlocSaveState {}
+
+final class WorkoutEditBlocSaveFailureState extends WorkoutEditBlocSaveState {
   final String message;
 
-  const WorkoutEditBlocUpdateSuccessState(this.message);
+  const WorkoutEditBlocSaveFailureState(this.message);
+}
+
+final class WorkoutEditBlocSaveSuccessState extends WorkoutEditBlocSaveState {
+  final String message;
+
+  const WorkoutEditBlocSaveSuccessState(this.message);
 }
 
 // Delete workout

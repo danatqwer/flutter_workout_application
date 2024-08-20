@@ -16,11 +16,11 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
     on<WorkoutEditBlocEvent>(
       (event, emit) async {
         if (event is WorkoutEditBlocInitializeEvent) {
-          _onInitializeEvent(emit);
-        } else if (event is WorkoutEditBlocUpdateEvent) {
-          _onUpdateEvent(event, emit);
+          await _onInitializeEvent(emit);
+        } else if (event is WorkoutEditBlocSaveEvent) {
+          await _onSaveEvent(event, emit);
         } else if (event is WorkoutEditBlocDeleteEvent) {
-          _onDeleteEvent(event, emit);
+          await _onDeleteEvent(event, emit);
         }
       },
       transformer: sequential(),
@@ -43,22 +43,26 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
     }
   }
 
-  Future<void> _onUpdateEvent(
-    WorkoutEditBlocUpdateEvent event,
+  Future<void> _onSaveEvent(
+    WorkoutEditBlocSaveEvent event,
     Emitter<WorkoutEditBlocState> emit,
   ) async {
-    final loadingState = WorkoutEditBlocUpdateLoadingState();
+    final loadingState = WorkoutEditBlocSaveLoadingState();
     emit(loadingState);
     try {
       final workout = event.workout;
       await workoutRepository.set(workout);
 
       const successMessage = 'Workout updated';
-      const successState = WorkoutEditBlocUpdateSuccessState(successMessage);
+      const successState = WorkoutEditBlocSaveSuccessState(successMessage);
       emit(successState);
+    } on Exception catch (e) {
+      final message = e.toString();
+      final failureState = WorkoutEditBlocSaveFailureState(message);
+      emit(failureState);
     } catch (e) {
       final message = e.toString();
-      final failureState = WorkoutEditBlocUpdateFailureState(message);
+      final failureState = WorkoutEditBlocSaveFailureState(message);
       emit(failureState);
     }
   }

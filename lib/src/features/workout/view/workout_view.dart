@@ -18,6 +18,12 @@ class WorkoutView extends StatelessWidget {
         leading: BackButton(
           onPressed: () => context.go(MainRoutes.workoutListPath),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => context.go(MainRoutes.workoutEditPath),
+            icon: const Icon(Icons.edit),
+          ),
+        ],
       ),
       body: const SafeArea(
         child: _WorkoutItemsWrapWidget(),

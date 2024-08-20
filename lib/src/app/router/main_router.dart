@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_workout_application/src/app/router/view/exception_view.dart';
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_add_bloc/workout_add_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_bloc/workout_bloc.dart';
+import 'package:flutter_workout_application/src/features/workout/bloc/workout_edit_bloc/workout_edit_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/bloc/workout_list_bloc/workout_list_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/repository/workout_id_repsitory/workout_id_shared_preferences_repository.dart';
 import 'package:flutter_workout_application/src/features/workout/repository/workout_id_repsitory/workout_id_repository.dart';
+import 'package:flutter_workout_application/src/features/workout/view/workout_edit_view.dart';
 import 'package:flutter_workout_application/src/features/workout/view/workout_view.dart';
 import 'package:flutter_workout_application/src/features/workout/view/workout_add_view.dart';
 import 'package:flutter_workout_application/src/features/workout/view/workout_list_view.dart';
@@ -17,11 +19,14 @@ class MainRoutes {
   static const workoutListName = 'workout_list';
   static const workoutName = 'workout';
   static const workoutAddName = 'workout_add';
+  static const workoutEditName = 'workout_edit';
 
   // Path
   static const workoutListPath = '/$workoutListName';
   static const workoutPath = '/$workoutListName/$workoutName';
   static const workoutAddPath = '/$workoutListName/$workoutAddName';
+  static const workoutEditPath =
+      '/$workoutListName/$workoutName/$workoutEditName';
 }
 
 class MainRouter {
@@ -66,6 +71,17 @@ class MainRouter {
             workoutIdService: workoutIdService,
           ),
           child: const WorkoutView(),
+        ),
+      ),
+      GoRoute(
+        path: MainRoutes.workoutEditPath,
+        name: MainRoutes.workoutEditName,
+        builder: (context, state) => BlocProvider(
+          create: (context) => WorkoutEditBloc(
+            workoutRepository: workoutRepository,
+            workoutIdService: workoutIdService,
+          ),
+          child: const WorkoutEditView(),
         ),
       ),
     ],

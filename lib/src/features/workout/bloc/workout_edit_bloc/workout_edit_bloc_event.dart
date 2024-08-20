@@ -6,10 +6,10 @@ sealed class WorkoutEditBlocEvent {
 
 final class WorkoutEditBlocInitializeEvent extends WorkoutEditBlocEvent {}
 
-final class WorkoutEditBlocUpdateEvent extends WorkoutEditBlocEvent {
+final class WorkoutEditBlocSaveEvent extends WorkoutEditBlocEvent {
   final Workout workout;
 
-  const WorkoutEditBlocUpdateEvent(this.workout);
+  const WorkoutEditBlocSaveEvent(this.workout);
 }
 
 final class WorkoutEditBlocDeleteEvent extends WorkoutEditBlocEvent {
