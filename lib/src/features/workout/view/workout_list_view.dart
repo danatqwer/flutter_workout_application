@@ -59,6 +59,12 @@ class _WorkoutListWidget extends StatelessWidget {
     final workouts = state.workouts;
     final itemCount = workouts.length;
 
+    if (workouts.isEmpty) {
+      return const Center(
+        child: Text('Workouts is empty'),
+      );
+    }
+
     return ListView.builder(
       itemBuilder: (context, index) => _WorkoutWidget(workouts[index]),
       itemCount: itemCount,
