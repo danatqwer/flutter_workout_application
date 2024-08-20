@@ -60,4 +60,16 @@ class Workout {
 
   @override
   int get hashCode => id.hashCode ^ name.hashCode ^ items.hashCode;
+
+  Workout copyWith({
+    String? id,
+    String? name,
+    List<WorkoutItem>? items,
+  }) {
+    return Workout(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      items: items ?? this.items,
+    );
+  }
 }

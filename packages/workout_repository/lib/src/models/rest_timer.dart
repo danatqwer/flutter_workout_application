@@ -41,4 +41,14 @@ class RestTimer extends WorkoutItem {
 
   @override
   int get hashCode => id.hashCode ^ duration.hashCode;
+
+  RestTimer copyWith({
+    String? id,
+    int? duration,
+  }) {
+    return RestTimer(
+      id: id ?? this.id,
+      duration: duration ?? this.duration,
+    );
+  }
 }

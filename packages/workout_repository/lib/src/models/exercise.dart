@@ -55,4 +55,18 @@ class Exercise extends WorkoutItem {
   int get hashCode {
     return id.hashCode ^ name.hashCode ^ type.hashCode ^ value.hashCode;
   }
+
+  Exercise copyWith({
+    String? id,
+    String? name,
+    ExerciseType? type,
+    int? value,
+  }) {
+    return Exercise(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      value: value ?? this.value,
+    );
+  }
 }
