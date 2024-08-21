@@ -21,12 +21,14 @@ class WorkoutItemAddView extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        minimum: const EdgeInsets.symmetric(horizontal: 24),
+        minimum: const EdgeInsets.symmetric(
+          horizontal: 8.0,
+          vertical: 2.0,
+        ),
         child: ListView(
           shrinkWrap: true,
           children: const [
             _WorkoutItemTypeChip(),
-            SizedBox(height: 16.0),
           ],
         ),
       ),

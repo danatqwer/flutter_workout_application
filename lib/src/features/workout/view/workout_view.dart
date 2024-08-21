@@ -19,9 +19,9 @@ class WorkoutView extends StatelessWidget {
           onPressed: () => context.go(MainRoutes.workoutListPath),
         ),
         actions: [
-          IconButton(
+          TextButton(
             onPressed: () => context.go(MainRoutes.workoutEditPath),
-            icon: const Icon(Icons.edit),
+            child: const Text('Edit'),
           ),
         ],
       ),

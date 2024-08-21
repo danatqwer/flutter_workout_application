@@ -39,7 +39,6 @@ class WorkoutItemWidget extends StatelessWidget {
 
     return Card(
       color: theme.color,
-      clipBehavior: Clip.hardEdge,
       child: SizedBox(
         height: 64,
         child: switch (item.itemType) {

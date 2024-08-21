@@ -17,6 +17,10 @@ class WorkoutListView extends StatelessWidget {
         title: const Text('Workouts'),
       ),
       body: const SafeArea(
+        minimum: EdgeInsets.symmetric(
+          horizontal: 8.0,
+          vertical: 2.0,
+        ),
         child: _WorkoutsWrapWidget(),
       ),
       floatingActionButton: FloatingActionButton(
@@ -83,8 +87,8 @@ class _WorkoutWidget extends StatelessWidget {
     final name = workout.name;
     final id = workout.id;
 
-    return MaterialButton(
-      onPressed: () => onPressed(context, id),
+    return GestureDetector(
+      onTap: () => onPressed(context, id),
       child: SizedBox(
         height: 64,
         child: Card(
