@@ -78,11 +78,12 @@ class _EdiNameWidgetState extends State<_EdiNameWidget> {
   bool editing = false;
 
   final _formKey = GlobalKey<FormState>();
-
   final _nameTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<WorkoutEditBloc>();
+
     final workout = widget.state.workout;
     final name = workout.name;
     _nameTextController.text = workout.name;
@@ -91,7 +92,7 @@ class _EdiNameWidgetState extends State<_EdiNameWidget> {
         ? Form(
             key: _formKey,
             child: _NameTextFormField(
-              onPressed: () => submit(),
+              onPressed: () => submit(bloc),
               controller: _nameTextController,
             ),
           )
@@ -101,13 +102,17 @@ class _EdiNameWidgetState extends State<_EdiNameWidget> {
           );
   }
 
-  void submit() {
+  void submit(WorkoutEditBloc bloc) {
     final currentState = _formKey.currentState!;
     if (!currentState.validate()) return;
 
     setState(() => editing = !editing);
-    // final name = _nameTextController.text;
-    // TODO: Implement name edit
+    final name = _nameTextController.text;
+    final state = bloc.state;
+    if (state is WorkoutEditBlocSuccessState) {
+      final workout = state.workout.copyWith(name: name);
+      bloc.add(WorkoutEditBlocUpdateEvent(workout));
+    }
   }
 }
 

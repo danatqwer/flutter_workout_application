@@ -8,6 +8,10 @@ class MainAppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       darkTheme: ThemeData.dark(),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        colorSchemeSeed: Colors.blue,
+      ),
       routerConfig: MainRouter.router,
     );
   }
