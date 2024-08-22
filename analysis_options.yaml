@@ -10,3 +10,5 @@ analyzer:
     -web/**
     -windows/**
     -packages/**
+    -**.freezed.dart
+    -**.g.dart
