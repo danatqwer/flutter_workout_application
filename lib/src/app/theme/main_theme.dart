@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_workout_application/src/features/workout/view/widgets/workout_item_widget/workout_item_widget_theme.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/workout_item_widget/workout_item_widget_theme.dart';
 
 class MainTheme {
   MainTheme(this.context);
