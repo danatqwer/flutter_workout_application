@@ -1,14 +1,1 @@
 include: package:flutter_lints/flutter.yaml
-
-analyzer:
-  exclude: 
-    -build/**
-    -android/**
-    -ios/**
-    -linux/**
-    -macos/**
-    -web/**
-    -windows/**
-    -packages/**
-    -**.freezed.dart
-    -**.g.dart
