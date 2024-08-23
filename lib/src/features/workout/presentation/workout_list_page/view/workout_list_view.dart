@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_workout_application/src/app/router/main_router.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/widgets/empty_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_list_page/bloc/workout_list_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_list_page/bloc/workout_list_bloc_event.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_list_page/bloc/workout_list_bloc_state.dart';
-import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/error_text.dart';
-import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/loading_text.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/widgets/error_text.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/widgets/loading_text.dart';
 import 'package:go_router/go_router.dart';
 
 class WorkoutListView extends StatelessWidget {
@@ -65,9 +66,7 @@ class _WorkoutListWidget extends StatelessWidget {
           return FailureText(state.errorMessage ?? '');
         }
         if (state.workouts.isEmpty) {
-          return const Center(
-            child: Text('Workouts is empty'),
-          );
+          return const IsEmptyText('Workouts');
         }
 
         final workouts = state.workouts;

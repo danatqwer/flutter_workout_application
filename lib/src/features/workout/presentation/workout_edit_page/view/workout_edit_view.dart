@@ -5,8 +5,8 @@ import 'package:flutter_workout_application/src/features/workout/domain/model/mo
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_event.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_state.dart';
-import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/error_text.dart';
-import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/loading_text.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/widgets/error_text.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/widgets/loading_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/workout_item_widget/workout_item_widget.dart';
 import 'package:go_router/go_router.dart';
 

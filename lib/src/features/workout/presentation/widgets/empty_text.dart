@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class FailureText extends StatelessWidget {
-  const FailureText(
+class IsEmptyText extends StatelessWidget {
+  const IsEmptyText(
     this.data, {
     super.key,
   });
@@ -11,7 +11,7 @@ class FailureText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(data),
+      child: Text('$data is empty'),
     );
   }
 }
