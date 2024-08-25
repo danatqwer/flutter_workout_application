@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_workout_application/src/app/router/main_router.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/widgets/empty_text.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/widgets/error_text.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/widgets/loading_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc_state.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/workout_item_widget/workout_item_widget.dart';
@@ -12,115 +14,115 @@ class WorkoutView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const _AppBarTitle(),
-        leading: BackButton(
-          onPressed: () => context.go(MainRoutes.workoutListPath),
+    return const Scaffold(
+      appBar: _AppBar(),
+      body: _Body(),
+    );
+  }
+}
+
+class _AppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _AppBar();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: const _Title(),
+      leading: BackButton(
+        onPressed: () => context.go(MainRoutes.workoutListPath),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => context.go(MainRoutes.workoutEditPath),
+          child: const Text('Edit'),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => context.go(MainRoutes.workoutEditPath),
-            child: const Text('Edit'),
-          ),
-        ],
-      ),
-      body: const SafeArea(
-        child: _WorkoutItemsWrapWidget(),
-      ),
+      ],
     );
   }
 }
 
-class _AppBarTitle extends StatelessWidget {
-  const _AppBarTitle();
+class _Title extends StatelessWidget {
+  const _Title();
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WorkoutBloc, WorkoutBlocState>(
-      builder: (context, state) => switch (state) {
-        WorkoutBlocLoadingState _ => const Text('Loading...'),
-        WorkoutBlocFailureState _ => Text(state.message),
-        WorkoutBlocSuccessState _ => Text(state.workout.name),
-        _ => const SizedBox(),
+      builder: (context, state) {
+        if (state.loading) {
+          return const LoadingText();
+        }
+        if (state.errorMessage != null) {
+          return FailureText(state.errorMessage ?? '');
+        }
+
+        final workoutName = state.workout.name;
+
+        if (workoutName.isEmpty) {
+          return const IsEmptyText('Workout name');
+        }
+
+        return Text(workoutName);
       },
     );
   }
 }
 
-class _WorkoutItemsWrapWidget extends StatelessWidget {
-  const _WorkoutItemsWrapWidget();
+class _Body extends StatelessWidget {
+  const _Body();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WorkoutBloc, WorkoutBlocState>(
-      builder: (context, state) => switch (state) {
-        WorkoutBlocLoadingState _ => const Center(
-            child: Text('Loading...'),
-          ),
-        WorkoutBlocFailureState _ => Center(
-            child: Text(state.message),
-          ),
-        WorkoutBlocSuccessState _ => _WorkoutItemsWidget(state),
-        _ => const SizedBox(),
-      },
+    return const SafeArea(
+      minimum: EdgeInsets.symmetric(
+        horizontal: 8.0,
+        vertical: 2.0,
+      ),
+      child: _WorkoutItemsWidget(),
     );
   }
 }
 
 class _WorkoutItemsWidget extends StatelessWidget {
-  const _WorkoutItemsWidget(this.state);
-
-  final WorkoutBlocSuccessState state;
+  const _WorkoutItemsWidget();
 
   @override
   Widget build(BuildContext context) {
-    final workout = state.workout;
-    final items = workout.items;
-    int selectedIndex = state.selectedIndex;
-    bool workoutStarted = state.workoutStarted;
+    return BlocBuilder<WorkoutBloc, WorkoutBlocState>(
+      builder: (context, state) {
+        if (state.loading) {
+          return const LoadingText();
+        }
+        if (state.errorMessage != null) {
+          return FailureText(state.errorMessage ?? '');
+        }
 
-    if (items.isEmpty) {
-      return const Center(
-        child: Text('Workouts items is empty'),
-      );
-    }
+        final workout = state.workout;
+        final items = workout.items;
+        int selectedIndex = state.selectedIndex;
+        bool workoutStarted = state.workoutStarted;
 
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: items.length,
-      itemBuilder: (context, index) => _WorkoutItemWrapWidget(
-        item: items[index],
-        index: index,
-        selectedIndex: selectedIndex,
-        workoutStarted: workoutStarted,
-      ),
-    );
-  }
-}
+        if (items.isEmpty) {
+          return const IsEmptyText('Workout items');
+        }
 
-class _WorkoutItemWrapWidget extends StatelessWidget {
-  const _WorkoutItemWrapWidget({
-    required this.item,
-    required this.index,
-    required this.selectedIndex,
-    required this.workoutStarted,
-  });
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final selected = index == selectedIndex && workoutStarted;
+            final enabled = index >= selectedIndex;
 
-  final WorkoutItem item;
-  final int index;
-  final int selectedIndex;
-  final bool workoutStarted;
-
-  @override
-  Widget build(BuildContext context) {
-    final selected = index == selectedIndex && workoutStarted;
-    final enabled = index >= selectedIndex;
-
-    return WorkoutItemWidget(
-      item: item,
-      selected: selected,
-      enabled: enabled,
+            return WorkoutItemWidget(
+              item: items[index],
+              selected: selected,
+              enabled: enabled,
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -1,18 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/repository/workout_repository.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_usecase.dart';
 
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc_event.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc_state.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/repository/workout_id_repository.dart';
 
 class WorkoutBloc extends Bloc<WorkoutBlocEvent, WorkoutBlocState> {
-  final WorkoutRepository workoutRepository;
-  final WorkoutIdRepository workoutIdRepository;
+  final GetWorkoutUseCase getWorkoutUseCase;
 
   WorkoutBloc({
-    required this.workoutRepository,
-    required this.workoutIdRepository,
-  }) : super(WorkoutBlocInitialState()) {
+    required this.getWorkoutUseCase,
+  }) : super(const WorkoutBlocState()) {
     on<WorkoutBlocEvent>(
       (event, emit) async {
         if (event is WorkoutBlocInitializeEvent) {
@@ -25,17 +22,17 @@ class WorkoutBloc extends Bloc<WorkoutBlocEvent, WorkoutBlocState> {
   }
 
   Future<void> _onInitializeWorkout(Emitter<WorkoutBlocState> emit) async {
-    final loadingState = WorkoutBlocLoadingState();
-    emit(loadingState);
     try {
-      final id = await workoutIdRepository.get();
-      final workout = await workoutRepository.get(id);
-      final successState = WorkoutBlocSuccessState(workout: workout);
-      emit(successState);
+      final workout = await getWorkoutUseCase.execute();
+      emit(state.copyWith(
+        loading: false,
+        workout: workout,
+      ));
     } catch (e) {
-      final message = e.toString();
-      final failureState = WorkoutBlocFailureState(message);
-      emit(failureState);
+      emit(state.copyWith(
+        loading: false,
+        errorMessage: e.toString(),
+      ));
     }
   }
 }

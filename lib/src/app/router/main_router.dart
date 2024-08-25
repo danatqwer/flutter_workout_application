@@ -3,11 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_workout_application/src/app/router/view/exception_view.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_data/source/remote/workout_remote_data_source_impl.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_data/workout_repository.dart';
-import 'package:flutter_workout_application/src/features/workout/data/workout_id_data/source/local/workout_id_local_data_source.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_id_data/source/local/workout_id_local_data_source_impl.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_id_data/workout_id_repository_impl.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/repository/workout_repository.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_list_usecase.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_id/storage/remove_workout_id_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_id/storage/set_workout_id_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_add_page/bloc/workout_add_bloc.dart';
@@ -15,14 +14,12 @@ import 'package:flutter_workout_application/src/features/workout/presentation/wo
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_item_add_page/bloc/workout_item_add_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_list_page/bloc/workout_list_bloc.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/repository/workout_id_repository.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/view/workout_edit_view.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_item_add_page/view/workout_item_add_view.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/workout_view.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_add_page/view/workout_add_view.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_list_page/view/workout_list_view.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MainRoutes {
   // Name
@@ -85,8 +82,10 @@ class MainRouter {
         name: MainRoutes.workoutName,
         builder: (context, state) => BlocProvider(
           create: (context) => WorkoutBloc(
-            workoutRepository: workoutRepository,
-            workoutIdRepository: workoutIdRepository,
+            getWorkoutUseCase: GetWorkoutUseCase(
+              workoutRepository: workoutRepository,
+              workoutIdRepository: workoutIdRepository,
+            ),
           ),
           child: const WorkoutView(),
         ),
