@@ -5,6 +5,7 @@ import 'package:flutter_workout_application/src/features/workout/data/entity/wor
 import 'package:flutter_workout_application/src/features/workout/data/entity/workout_item_entity.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/types/workout_item_type.dart';
+import 'package:uuid/uuid.dart';
 
 class Workout {
   final String id;
@@ -16,6 +17,19 @@ class Workout {
     required this.name,
     required this.items,
   });
+
+  factory Workout.createWithUID({
+    required String name,
+    required List<WorkoutItem> items,
+  }) {
+    const uuid = Uuid();
+    final id = uuid.v7();
+    return Workout(
+      id: id,
+      name: name,
+      items: [],
+    );
+  }
 
   factory Workout.fromEntity(WorkoutEntity entity) {
     return Workout(

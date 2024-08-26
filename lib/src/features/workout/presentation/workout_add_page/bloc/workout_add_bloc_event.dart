@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
 
 sealed class WorkoutAddBlocEvent extends Equatable {
   const WorkoutAddBlocEvent();
@@ -9,7 +8,7 @@ sealed class WorkoutAddBlocEvent extends Equatable {
 }
 
 final class WorkoutAddBlocAddEvent extends WorkoutAddBlocEvent {
-  final Workout workout;
+  final String workoutName;
 
-  const WorkoutAddBlocAddEvent(this.workout);
+  const WorkoutAddBlocAddEvent(this.workoutName);
 }

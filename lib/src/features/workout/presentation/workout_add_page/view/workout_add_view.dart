@@ -1,28 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_workout_application/src/app/router/main_router.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_add_page/bloc/workout_add_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_add_page/bloc/workout_add_bloc_event.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/workout_add_page/bloc/workout_add_bloc_state.dart';
 import 'package:go_router/go_router.dart';
-import 'package:uuid/uuid.dart';
 
 class WorkoutAddView extends StatelessWidget {
   const WorkoutAddView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add workout'),
-        leading: BackButton(
-          onPressed: () => context.go(MainRoutes.workoutListPath),
-        ),
+    return const Scaffold(
+      appBar: _AppBar(),
+      body: _Body(),
+    );
+  }
+}
+
+class _AppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _AppBar();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: const Text('Add workout'),
+      leading: BackButton(
+        onPressed: () => context.go(MainRoutes.workoutListPath),
       ),
-      body: const SafeArea(
-        minimum: EdgeInsets.symmetric(horizontal: 24),
-        child: _Form(),
-      ),
+    );
+  }
+}
+
+class _Body extends StatelessWidget {
+  const _Body();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SafeArea(
+      minimum: EdgeInsets.symmetric(horizontal: 24),
+      child: _Form(),
     );
   }
 }
@@ -49,49 +69,24 @@ class _FormState extends State<_Form> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _NameTextFormField(controller: _nameTextController),
+          TextFormField(
+            controller: _nameTextController,
+            decoration: const InputDecoration(labelText: 'Name'),
+            validator: (value) => _validator(value),
+          ),
           const SizedBox(height: 16),
           Align(
             alignment: Alignment.centerRight,
-            child: _AddButton(onPressed: () => submit(bloc)),
+            child: BlocListener<WorkoutAddBloc, WorkoutAddBlocState>(
+              listener: (context, state) => _listener(state, context),
+              child: ElevatedButton(
+                onPressed: () => submit(bloc),
+                child: const Text('Add'),
+              ),
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  void submit(WorkoutAddBloc bloc) {
-    final currentState = _formKey.currentState!;
-    if (!currentState.validate()) return;
-
-    final name = _nameTextController.text;
-    const uuid = Uuid();
-    final workout = Workout(
-      id: uuid.v7(),
-      name: name,
-      items: [],
-    );
-
-    bloc.add(WorkoutAddBlocAddEvent(workout));
-
-    context.go(MainRoutes.workoutListPath);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Workout added')),
-    );
-  }
-}
-
-class _NameTextFormField extends StatelessWidget {
-  const _NameTextFormField({required this.controller});
-
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      decoration: const InputDecoration(labelText: 'Name'),
-      validator: (value) => _validator(value),
     );
   }
 
@@ -101,18 +96,28 @@ class _NameTextFormField extends StatelessWidget {
     }
     return null;
   }
-}
 
-class _AddButton extends StatelessWidget {
-  const _AddButton({required this.onPressed});
+  void _listener(WorkoutAddBlocState state, BuildContext context) {
+    final successMessage = state.successMessage;
+    final errorMessage = state.errorMessage;
 
-  final void Function() onPressed;
+    if (successMessage != null) {
+      context.go(MainRoutes.workoutListPath);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(successMessage)),
+      );
+    } else if (errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
+    }
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () => onPressed(),
-      child: const Text('Add'),
-    );
+  void submit(WorkoutAddBloc bloc) {
+    final currentState = _formKey.currentState!;
+    if (!currentState.validate()) return;
+
+    final name = _nameTextController.text;
+    bloc.add(WorkoutAddBlocAddEvent(name));
   }
 }
