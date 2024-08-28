@@ -5,6 +5,7 @@ import 'package:flutter_workout_application/src/features/workout/domain/types/wo
 import 'package:uuid/uuid.dart';
 
 class Exercise extends WorkoutItem {
+  @override
   final String id;
   final String name;
   final ExerciseType type;

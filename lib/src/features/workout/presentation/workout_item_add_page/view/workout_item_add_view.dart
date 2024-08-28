@@ -267,7 +267,7 @@ class _RestTimerFormState extends State<_RestTimerForm> {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           ),
           const SizedBox(height: 16.0),
-          _AddButton(onPressed: () => _submit)
+          _AddButton(onPressed: () => _submit())
         ],
       ),
     );

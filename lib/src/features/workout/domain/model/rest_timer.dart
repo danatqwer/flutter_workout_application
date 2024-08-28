@@ -5,13 +5,14 @@ import 'package:uuid/uuid.dart';
 import 'workout_item.dart';
 
 class RestTimer extends WorkoutItem {
+  @override
   final String id;
   final int duration;
 
   const RestTimer({
     required this.id,
     required this.duration,
-  }) : super(itemType: WorkoutItemType.restTimer);
+  }) : super( itemType: WorkoutItemType.restTimer);
 
   factory RestTimer.fromEntity(RestTimerEntity entity) {
     return RestTimer(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_workout_application/src/app/router/main_routes.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
-import 'package:flutter_workout_application/src/features/workout/presentation/widgets/empty_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_event.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_state.dart';
@@ -36,27 +35,26 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: BackButton(
         onPressed: () => context.go(MainRoutes.workoutPath),
       ),
-      actions: const [
-        _SaveButtonListener(),
-        SizedBox(width: 2.0),
+      actions: [
+        BlocListener<WorkoutEditBloc, WorkoutEditBlocState>(
+          listenWhen: (previous, current) =>
+              current is WorkoutEditBlocSaveState,
+          listener: (context, state) => _saveButtonListener(state, context),
+          child: const _SaveButton(),
+        ),
+        const SizedBox(width: 5.0),
+        BlocListener<WorkoutEditBloc, WorkoutEditBlocState>(
+          listenWhen: (previous, current) =>
+              current is WorkoutEditBlocDeleteState,
+          listener: (context, state) => _deleteButtonListener(state, context),
+          child: const _DeleteButton(),
+        ),
+        const SizedBox(width: 2.0),
       ],
     );
   }
-}
 
-class _SaveButtonListener extends StatelessWidget {
-  const _SaveButtonListener();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<WorkoutEditBloc, WorkoutEditBlocState>(
-      listenWhen: (previous, current) => current is WorkoutEditBlocSaveState,
-      listener: (context, state) => _listener(state, context),
-      child: const _SaveButton(),
-    );
-  }
-
-  void _listener(WorkoutEditBlocState state, BuildContext context) {
+  void _saveButtonListener(WorkoutEditBlocState state, BuildContext context) {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     scaffoldMessenger.removeCurrentSnackBar();
 
@@ -82,6 +80,36 @@ class _SaveButtonListener extends StatelessWidget {
     } else {
       scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Save failed: $state')),
+      );
+    }
+  }
+
+  void _deleteButtonListener(WorkoutEditBlocState state, BuildContext context) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.removeCurrentSnackBar();
+
+    if (state is WorkoutEditBlocDeleteState) {
+      final String message;
+      if (state.loading) {
+        message = 'Saving...';
+      } else if (state.errorMessage != null) {
+        message = 'Saving failed: ${state.errorMessage}';
+      } else if (state.successMessage != null) {
+        message = state.successMessage!;
+      } else {
+        return;
+      }
+
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+
+      if (state.successMessage != null) {
+        context.go(MainRoutes.workoutListPath);
+      }
+    } else {
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Delete failed: $state')),
       );
     }
   }
@@ -114,6 +142,33 @@ class _SaveButton extends StatelessWidget {
   }
 }
 
+class _DeleteButton extends StatelessWidget {
+  const _DeleteButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () => _onDeletePressed(context),
+      child: const Text('Delete'),
+    );
+  }
+
+  void _onDeletePressed(BuildContext context) {
+    final bloc = context.read<WorkoutEditBloc>();
+    final state = bloc.state;
+
+    if (state is WorkoutEditBlocInitializeState) {
+      bloc.add(WorkoutEditBlocDeleteEvent(state.workout.id));
+    } else {
+      final scaffoldMessenger = ScaffoldMessenger.of(context);
+      scaffoldMessenger.removeCurrentSnackBar();
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Delete failed')),
+      );
+    }
+  }
+}
+
 class _WorkoutNameWidget extends StatefulWidget {
   const _WorkoutNameWidget();
 
@@ -137,9 +192,6 @@ class _WorkoutNameWidgetState extends State<_WorkoutNameWidget> {
         }
         if (state.errorMessage != null) {
           return FailureText(state.errorMessage ?? '');
-        }
-        if (state.workout.items.isEmpty) {
-          return const IsEmptyText('Items');
         }
 
         return _WorkoutNameChangeWidget(state.workout);
@@ -250,9 +302,6 @@ class _WorkoutItemsWidgetState extends State<_WorkoutItemsWidget> {
         }
         if (state.errorMessage != null) {
           return FailureText(state.errorMessage ?? '');
-        }
-        if (state.workout.items.isEmpty) {
-          return const IsEmptyText('Items');
         }
 
         final workout = state.workout;
