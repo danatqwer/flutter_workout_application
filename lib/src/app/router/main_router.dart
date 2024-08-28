@@ -11,8 +11,6 @@ import 'package:flutter_workout_application/src/features/workout/presentation/wo
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_item_add_page/view/workout_item_add_view.dart';
 import 'package:go_router/go_router.dart';
 
-
-
 class MainRouter {
   // Dependencies
   static final workoutRepository = WorkoutRepositoryImpl(
@@ -28,7 +26,7 @@ class MainRouter {
       MainRouterPages.workoutListGoRoute(),
       MainRouterPages.workoutPageGoRoute(),
       MainRouterPages.workoutAddGoRoute(),
-     MainRouterPages.workoutEditPageGoRoute(),
+      MainRouterPages.workoutEditPageGoRoute(),
       GoRoute(
         path: MainRoutes.workoutItemAddPath,
         name: MainRoutes.workoutItemAddName,
