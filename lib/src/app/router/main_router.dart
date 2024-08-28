@@ -1,34 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_workout_application/src/app/router/main_router_pages/main_router_pages.dart';
+import 'package:flutter_workout_application/src/app/router/main_router_pages.dart';
+import 'package:flutter_workout_application/src/app/router/main_routes.dart';
 import 'package:flutter_workout_application/src/app/router/view/exception_view.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_data/source/remote/workout_remote_data_source_impl.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_data/workout_repository.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_id_data/source/local/workout_id_local_data_source_impl.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_id_data/workout_id_repository_impl.dart';
-import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_item_add_page/bloc/workout_item_add_bloc.dart';
-import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/view/workout_edit_view.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_item_add_page/view/workout_item_add_view.dart';
 import 'package:go_router/go_router.dart';
 
-class MainRoutes {
-  // Name
-  static const workoutListName = 'workout_list';
-  static const workoutName = 'workout';
-  static const workoutAddName = 'workout_add';
-  static const workoutEditName = 'workout_edit';
-  static const workoutItemAddName = 'workout_item_add';
 
-  // Path
-  static const workoutListPath = '/$workoutListName';
-  static const workoutPath = '/$workoutListName/$workoutName';
-  static const workoutAddPath = '/$workoutListName/$workoutAddName';
-  static const workoutEditPath =
-      '/$workoutListName/$workoutName/$workoutEditName';
-  static const workoutItemAddPath =
-      '/$workoutListName/$workoutName/$workoutEditName/$workoutItemAddName';
-}
 
 class MainRouter {
   // Dependencies
@@ -45,17 +28,7 @@ class MainRouter {
       MainRouterPages.workoutListGoRoute(),
       MainRouterPages.workoutPageGoRoute(),
       MainRouterPages.workoutAddGoRoute(),
-      GoRoute(
-        path: MainRoutes.workoutEditPath,
-        name: MainRoutes.workoutEditName,
-        builder: (context, state) => BlocProvider(
-          create: (context) => WorkoutEditBloc(
-            workoutRepository: workoutRepository,
-            workoutIdRepository: workoutIdRepository,
-          ),
-          child: const WorkoutEditView(),
-        ),
-      ),
+     MainRouterPages.workoutEditPageGoRoute(),
       GoRoute(
         path: MainRoutes.workoutItemAddPath,
         name: MainRoutes.workoutItemAddName,

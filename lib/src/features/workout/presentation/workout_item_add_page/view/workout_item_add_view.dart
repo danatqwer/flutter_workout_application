@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_workout_application/src/app/router/main_router.dart';
+import 'package:flutter_workout_application/src/app/router/main_routes.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/types/exercise_type.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/types/workout_item_type.dart';

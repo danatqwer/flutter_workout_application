@@ -1,20 +1,21 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/repository/workout_repository.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/delete_workout_usecase.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_usecase.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/set_workout_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_event.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_state.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/repository/workout_id_repository.dart';
 
 class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
-  final WorkoutRepository workoutRepository;
-  final WorkoutIdRepository workoutIdRepository;
+  final GetWorkoutUseCase getWorkoutUseCase;
+  final SetWorkoutUseCase setWorkoutUseCase;
+  final DeleteWorkoutUseCase deleteWorkoutUseCase;
 
   WorkoutEditBloc({
-    required this.workoutRepository,
-    required this.workoutIdRepository,
-  }) : super(WorkoutEditBlocInitialState()) {
+    required this.getWorkoutUseCase,
+    required this.setWorkoutUseCase,
+    required this.deleteWorkoutUseCase,
+  }) : super(const WorkoutEditBlocInitializeState()) {
     on<WorkoutEditBlocEvent>(
       (event, emit) async {
         if (event is WorkoutEditBlocInitializeEvent) {
@@ -33,17 +34,18 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
   }
 
   Future<void> _onInitializeEvent(Emitter<WorkoutEditBlocState> emit) async {
-    final loadingState = WorkoutEditBlocLoadingState();
-    emit(loadingState);
     try {
-      final id = await workoutIdRepository.get();
-      final workout = await workoutRepository.get(id);
-      final successState = WorkoutEditBlocSuccessState(workout);
-      emit(successState);
+      final workout = await getWorkoutUseCase.execute();
+      
+      emit(WorkoutEditBlocInitializeState(
+        loading: false,
+        workout: workout,
+      ));
     } catch (e) {
-      final message = e.toString();
-      final failureState = WorkoutEditBlocFailureState(message);
-      emit(failureState);
+      emit(WorkoutEditBlocInitializeState(
+        loading: false,
+        errorMessage: e.toString(),
+      ));
     }
   }
 
@@ -51,15 +53,18 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
     WorkoutEditBlocUpdateEvent event,
     Emitter<WorkoutEditBlocState> emit,
   ) async {
-    final loadingState = WorkoutEditBlocLoadingState();
-    emit(loadingState);
     try {
       final workout = event.workout;
-      final successState = WorkoutEditBlocSuccessState(workout);
-      emit(successState);
+
+      emit(WorkoutEditBlocInitializeState(
+        loading: false,
+        workout: workout,
+      ));
     } catch (e) {
-      final message = e.toString();
-      log(message);
+      emit(WorkoutEditBlocInitializeState(
+        loading: false,
+        errorMessage: e.toString(),
+      ));
     }
   }
 
@@ -67,23 +72,19 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
     WorkoutEditBlocSaveEvent event,
     Emitter<WorkoutEditBlocState> emit,
   ) async {
-    final loadingState = WorkoutEditBlocSaveLoadingState();
-    emit(loadingState);
     try {
       final workout = event.workout;
-      await workoutRepository.set(workout);
+      await setWorkoutUseCase.execute(workout);
 
-      const successMessage = 'Workout updated';
-      const successState = WorkoutEditBlocSaveSuccessState(successMessage);
-      emit(successState);
-    } on Exception catch (e) {
-      final message = e.toString();
-      final failureState = WorkoutEditBlocSaveFailureState(message);
-      emit(failureState);
+      emit(const WorkoutEditBlocSaveState(
+        loading: false,
+        successMessage: 'Workout updated successfully.',
+      ));
     } catch (e) {
-      final message = e.toString();
-      final failureState = WorkoutEditBlocSaveFailureState(message);
-      emit(failureState);
+      emit(WorkoutEditBlocSaveState(
+        loading: false,
+        errorMessage: e.toString(),
+      ));
     }
   }
 
@@ -91,19 +92,18 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
     WorkoutEditBlocDeleteEvent event,
     Emitter<WorkoutEditBlocState> emit,
   ) async {
-    final loadingState = WorkoutEditBlocLoadingState();
-    emit(loadingState);
     try {
-      final workoutId = event.workoutId;
-      await workoutRepository.delete(workoutId);
+      await deleteWorkoutUseCase.execute();
 
-      const successMessage = 'Workout deleted';
-      const successState = WorkoutEditBlocDeleteSuccessState(successMessage);
-      emit(successState);
+      emit(const WorkoutEditBlocDeleteState(
+        loading: false,
+        successMessage: 'Workout deleted successfully.',
+      ));
     } catch (e) {
-      final message = e.toString();
-      final failureState = WorkoutEditBlocDeleteFailureState(message);
-      emit(failureState);
+      emit(WorkoutEditBlocDeleteState(
+        loading: false,
+        errorMessage: e.toString(),
+      ));
     }
   }
 }

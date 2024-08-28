@@ -1,66 +1,44 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-sealed class WorkoutEditBlocState extends Equatable {
-  const WorkoutEditBlocState();
+part 'workout_edit_bloc_state.freezed.dart';
 
-  @override
-  List<Object> get props => [];
-}
+sealed class WorkoutEditBlocState {}
 
 // Initialize workout
-final class WorkoutEditBlocInitializeState extends WorkoutEditBlocState {
-  const WorkoutEditBlocInitializeState();
+@freezed
+sealed class WorkoutEditBlocInitializeState extends WorkoutEditBlocState
+    with _$WorkoutEditBlocInitializeState {
+  const factory WorkoutEditBlocInitializeState({
+    @Default(true) bool loading,
+    String? errorMessage,
+    @Default(Workout(
+      id: '',
+      name: '',
+      items: [],
+    ))
+    Workout workout,
+  }) = _WorkoutEditBlocInitializeState;
 }
 
-final class WorkoutEditBlocInitialState
-    extends WorkoutEditBlocInitializeState {}
-
-final class WorkoutEditBlocLoadingState
-    extends WorkoutEditBlocInitializeState {}
-
-final class WorkoutEditBlocFailureState extends WorkoutEditBlocInitializeState {
-  final String message;
-
-  const WorkoutEditBlocFailureState(this.message);
+// Save workout state
+@freezed
+sealed class WorkoutEditBlocSaveState extends WorkoutEditBlocState
+    with _$WorkoutEditBlocSaveState {
+  const factory WorkoutEditBlocSaveState({
+    @Default(true) bool loading,
+    String? errorMessage,
+    String? successMessage,
+  }) = _WorkoutEditBlocSaveState;
 }
 
-final class WorkoutEditBlocSuccessState extends WorkoutEditBlocInitializeState {
-  final Workout workout;
-
-  const WorkoutEditBlocSuccessState(this.workout);
-}
-
-// Save workout
-final class WorkoutEditBlocSaveState extends WorkoutEditBlocState {
-  const WorkoutEditBlocSaveState();
-}
-
-final class WorkoutEditBlocSaveLoadingState extends WorkoutEditBlocSaveState {}
-
-final class WorkoutEditBlocSaveFailureState extends WorkoutEditBlocSaveState {
-  final String message;
-
-  const WorkoutEditBlocSaveFailureState(this.message);
-}
-
-final class WorkoutEditBlocSaveSuccessState extends WorkoutEditBlocSaveState {
-  final String message;
-
-  const WorkoutEditBlocSaveSuccessState(this.message);
-}
-
-// Delete workout
-final class WorkoutEditBlocDeleteLoadingState extends WorkoutEditBlocState {}
-
-final class WorkoutEditBlocDeleteFailureState extends WorkoutEditBlocState {
-  final String message;
-
-  const WorkoutEditBlocDeleteFailureState(this.message);
-}
-
-final class WorkoutEditBlocDeleteSuccessState extends WorkoutEditBlocState {
-  final String message;
-
-  const WorkoutEditBlocDeleteSuccessState(this.message);
+// Delete workout state
+@freezed
+sealed class WorkoutEditBlocDeleteState extends WorkoutEditBlocState
+    with _$WorkoutEditBlocDeleteState {
+  const factory WorkoutEditBlocDeleteState({
+    @Default(true) bool loading,
+    String? errorMessage,
+    String? successMessage,
+  }) = _WorkoutEditBlocDeleteState;
 }

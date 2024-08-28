@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_workout_application/src/app/router/main_router.dart';
+import 'package:flutter_workout_application/src/app/router/main_routes.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_data/source/remote/workout_remote_data_source_impl.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_data/workout_repository.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_id_data/source/local/workout_id_local_data_source_impl.dart';
 import 'package:flutter_workout_application/src/features/workout/data/workout_id_data/workout_id_repository_impl.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/delete_workout_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_list_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/set_workout_usecase.dart';
@@ -12,6 +13,8 @@ import 'package:flutter_workout_application/src/features/workout/domain/usecases
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_id/storage/set_workout_id_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_add_page/bloc/workout_add_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_add_page/view/workout_add_view.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/view/workout_edit_view.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_list_page/bloc/workout_list_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_list_page/view/workout_list_view.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc.dart';
@@ -28,22 +31,38 @@ abstract class MainRouterPages {
     local: WorkoutIdLocalDataSourceImpl(),
   );
 
-  //GoRoutes
+  // Use cases
+  static final _getWorkoutListUsecase = GetWorkoutListUsecase(
+    workoutRepository: _workoutRepository,
+  );
+  static final _getWorkoutUseCase = GetWorkoutUseCase(
+    workoutRepository: _workoutRepository,
+    workoutIdRepository: _workoutIdRepository,
+  );
+  static final _setWorkoutUseCase = SetWorkoutUseCase(
+    workoutRepository: _workoutRepository,
+  );
+  static final _deleteWorkoutUseCase = DeleteWorkoutUseCase(
+    workoutRepository: _workoutRepository,
+    workoutIdRepository: _workoutIdRepository,
+  );
+  static final _setWorkoutIdUsecase = SetWorkoutIdUsecase(
+    workoutIdRepository: _workoutIdRepository,
+  );
+  static final _removeWorkoutIdUsecase = RemoveWorkoutIdUsecase(
+    workoutIdRepository: _workoutIdRepository,
+  );
+
+  // GoRoutes
   static GoRoute workoutListGoRoute() {
     return GoRoute(
       path: MainRoutes.workoutListPath,
       name: MainRoutes.workoutListName,
       builder: (context, state) => BlocProvider(
         create: (context) => WorkoutListBloc(
-          getWorkoutListUseCase: GetWorkoutListUsecase(
-            workoutRepository: _workoutRepository,
-          ),
-          setWorkoutIdUseCase: SetWorkoutIdUsecase(
-            workoutIdRepository: _workoutIdRepository,
-          ),
-          removeWorkoutIdUseCase: RemoveWorkoutIdUsecase(
-            workoutIdRepository: _workoutIdRepository,
-          ),
+          getWorkoutListUseCase: _getWorkoutListUsecase,
+          setWorkoutIdUseCase: _setWorkoutIdUsecase,
+          removeWorkoutIdUseCase: _removeWorkoutIdUsecase,
         ),
         child: const WorkoutListView(),
       ),
@@ -56,9 +75,7 @@ abstract class MainRouterPages {
       name: MainRoutes.workoutAddName,
       builder: (context, state) => BlocProvider(
         create: (context) => WorkoutAddBloc(
-          setWorkoutUseCase: SetWorkoutUseCase(
-            workoutRepository: _workoutRepository,
-          ),
+          setWorkoutUseCase: _setWorkoutUseCase,
         ),
         child: const WorkoutAddView(),
       ),
@@ -71,12 +88,24 @@ abstract class MainRouterPages {
       name: MainRoutes.workoutName,
       builder: (context, state) => BlocProvider(
         create: (context) => WorkoutBloc(
-          getWorkoutUseCase: GetWorkoutUseCase(
-            workoutRepository: _workoutRepository,
-            workoutIdRepository: _workoutIdRepository,
-          ),
+          getWorkoutUseCase: _getWorkoutUseCase,
         ),
         child: const WorkoutView(),
+      ),
+    );
+  }
+
+  static GoRoute workoutEditPageGoRoute() {
+    return GoRoute(
+      path: MainRoutes.workoutEditPath,
+      name: MainRoutes.workoutEditName,
+      builder: (context, state) => BlocProvider(
+        create: (context) => WorkoutEditBloc(
+          getWorkoutUseCase: _getWorkoutUseCase,
+          setWorkoutUseCase: _setWorkoutUseCase,
+          deleteWorkoutUseCase: _deleteWorkoutUseCase,
+        ),
+        child: const WorkoutEditView(),
       ),
     );
   }

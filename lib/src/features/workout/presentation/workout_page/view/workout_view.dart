@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_workout_application/src/app/router/main_router.dart';
+import 'package:flutter_workout_application/src/app/router/main_routes.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/widgets/empty_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/widgets/error_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/widgets/loading_text.dart';
