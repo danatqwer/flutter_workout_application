@@ -1,40 +1,44 @@
-import 'dart:developer';
-
-import 'package:flutter_workout_application/src/features/workout/domain/repository/workout_id_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/repository/workout_repository.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_usecase.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/update_workout_usecase.dart';
 
 import 'workout_item_add_bloc_event.dart';
 import 'workout_item_add_bloc_state.dart';
 
 class WorkoutItemAddBloc
     extends Bloc<WorkoutItemAddBlocEvent, WorkoutItemAddBlocState> {
-  final WorkoutRepository workoutRepository;
-  final WorkoutIdRepository workoutIdRepository;
+  final GetWorkoutUseCase getWorkoutUseCase;
+  final UpdateWorkoutUseCase updateWorkoutUseCase;
 
   WorkoutItemAddBloc({
-    required this.workoutRepository,
-    required this.workoutIdRepository,
-  }) : super(const WorkoutItemAddBlocInitialState()) {
+    required this.getWorkoutUseCase,
+    required this.updateWorkoutUseCase,
+  }) : super(const WorkoutItemAddBlocState()) {
     on<WorkoutItemAddBlocAddEvent>(
       (event, emit) async {
-        const loadingState = WorkoutItemAddBlocLoadingState();
-        emit(loadingState);
-        try {
-          final workoutId = await workoutIdRepository.get();
-          final workout = await workoutRepository.get(workoutId);
-          workout.items.add(event.workoutItem);
-          await workoutRepository.update(workout);
-          const successState =
-              WorkoutItemAddBlocSuccessState('Item added successfully.');
-          emit(successState);
-        } catch (e) {
-          final message = e.toString();
-          log(message);
-          final failureState = WorkoutItemAddBlocFailureState(message);
-          emit(failureState);
-        }
+        await _onWorkoutItemAddEvent(event, emit);
       },
     );
+  }
+
+  Future<void> _onWorkoutItemAddEvent(
+    WorkoutItemAddBlocAddEvent event,
+    Emitter<WorkoutItemAddBlocState> emit,
+  ) async {
+    try {
+      final workout = await getWorkoutUseCase.execute();
+      workout.items.add(event.workoutItem);
+      await updateWorkoutUseCase.execute(workout);
+
+      emit(const WorkoutItemAddBlocState(
+        loading: false,
+        successMessage: 'Item added successfully.',
+      ));
+    } catch (e) {
+      emit(WorkoutItemAddBlocState(
+        loading: false,
+        errorMessage: e.toString(),
+      ));
+    }
   }
 }

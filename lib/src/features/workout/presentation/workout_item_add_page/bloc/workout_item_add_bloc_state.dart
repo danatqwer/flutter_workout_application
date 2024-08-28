@@ -1,28 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-sealed class WorkoutItemAddBlocState extends Equatable {
-  const WorkoutItemAddBlocState();
+part 'workout_item_add_bloc_state.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-final class WorkoutItemAddBlocInitialState extends WorkoutItemAddBlocState {
-  const WorkoutItemAddBlocInitialState();
-}
-
-final class WorkoutItemAddBlocLoadingState extends WorkoutItemAddBlocState {
-  const WorkoutItemAddBlocLoadingState();
-}
-
-final class WorkoutItemAddBlocFailureState extends WorkoutItemAddBlocState {
-  final String message;
-
-  const WorkoutItemAddBlocFailureState(this.message);
-}
-
-final class WorkoutItemAddBlocSuccessState extends WorkoutItemAddBlocState {
-  final String message;
-
-  const WorkoutItemAddBlocSuccessState(this.message);
+@freezed
+sealed class WorkoutItemAddBlocState with _$WorkoutItemAddBlocState {
+  const factory WorkoutItemAddBlocState({
+    @Default(true) bool loading,
+    String? errorMessage,
+    String? successMessage,
+  }) = _WorkoutItemAddBlocState;
 }

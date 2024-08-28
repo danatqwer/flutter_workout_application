@@ -1,6 +1,6 @@
-
 import 'package:flutter_workout_application/src/features/workout/data/entity/rest_timer_entity.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/types/workout_item_type.dart';
+import 'package:uuid/uuid.dart';
 
 import 'workout_item.dart';
 
@@ -20,6 +20,15 @@ class RestTimer extends WorkoutItem {
     );
   }
 
+  factory RestTimer.createWithUID({required int duration}) {
+    const uuid = Uuid();
+    final id = uuid.v7();
+    return RestTimer(
+      id: id,
+      duration: duration,
+    );
+  }
+
   @override
   RestTimerEntity toEntity() {
     return RestTimerEntity(
@@ -34,10 +43,8 @@ class RestTimer extends WorkoutItem {
   @override
   bool operator ==(covariant RestTimer other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.duration == duration;
+
+    return other.id == id && other.duration == duration;
   }
 
   @override
