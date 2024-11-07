@@ -1,18 +1,19 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_workout_application/src/utilities/modified_timer/modified_timer.dart';
 
 class SecondsTimerText extends StatefulWidget {
   const SecondsTimerText({
     super.key,
     required this.seconds,
     this.enable = true,
+    this.pause = false,
     this.onTimerEnd,
     this.style,
   });
 
   final int seconds;
   final bool enable;
+  final bool pause;
   final void Function()? onTimerEnd;
   final TextStyle? style;
 
@@ -21,50 +22,57 @@ class SecondsTimerText extends StatefulWidget {
 }
 
 class _SecondsTimerTextState extends State<SecondsTimerText> {
-  Timer? timer;
-  int duration = 0;
-  bool isStarted = false;
-
-  void start() {
-    duration = widget.seconds;
-    isStarted = true;
-    final onTimerEnd = widget.onTimerEnd;
-    const period = Duration(seconds: 1);
-    timer = Timer.periodic(period, (timer) {
-      if (duration > 0) return setState(() => duration--);
-      if (onTimerEnd != null) onTimerEnd();
-      timer.cancel();
-    });
-  }
+  int seconds = 0;
+  ModifiedTimer? timer;
 
   @override
   void initState() {
-    if (widget.enable && !isStarted) start();
+    seconds = widget.seconds;
+    start();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant SecondsTimerText oldWidget) {
-    timer?.cancel();
-    isStarted = false;
-    if (widget.enable && !isStarted) start();
+    timer?.cancelTimer();
+    start();
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    timer?.cancelTimer();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!isStarted) {
-      return Text('${widget.seconds} seconds');
+    if (timer?.status == ModifiedTimerStatus.notStarted) {
+      return Text('${timer?.seconds} seconds');
     }
+
+    if (widget.pause) {
+      timer?.pause();
+    } else {
+      timer?.resume();
+    }
+
+    seconds = timer?.currentSecond ?? 0;
     return Text(
-      '$duration seconds',
+      '$seconds seconds',
       style: widget.style,
     );
+  }
+
+  void start() {
+    timer = ModifiedTimer(
+      seconds: seconds,
+      onTick: () => setState(() {}),
+      onEnd: widget.onTimerEnd,
+    );
+
+    if (widget.enable) {
+      timer?.start();
+    }
   }
 }

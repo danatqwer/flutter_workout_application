@@ -14,12 +14,14 @@ class WorkoutItemWidget extends StatelessWidget {
     required this.item,
     this.enabled = true,
     this.selected = false,
+    this.pause = false,
     this.onTimerEnd,
   });
 
   final WorkoutItem item;
   final bool enabled;
   final bool selected;
+  final bool pause;
   final void Function()? onTimerEnd;
 
   @override
@@ -48,11 +50,13 @@ class WorkoutItemWidget extends StatelessWidget {
           WorkoutItemType.exercise => _ExerciseWidget(
               exercise: item as Exercise,
               selected: selected,
+              pause: pause,
               onTimerEnd: onTimerEnd,
             ),
           WorkoutItemType.restTimer => _RestTimerWidget(
               restTimer: item as RestTimer,
               selected: selected,
+              pause: pause,
               onTimerEnd: onTimerEnd,
             ),
         },
@@ -65,11 +69,13 @@ class _ExerciseWidget extends StatelessWidget {
   const _ExerciseWidget({
     required this.exercise,
     this.selected = false,
+    this.pause = false,
     this.onTimerEnd,
   });
 
   final Exercise exercise;
   final bool selected;
+  final bool pause;
   final void Function()? onTimerEnd;
 
   @override
@@ -92,6 +98,7 @@ class _ExerciseWidget extends StatelessWidget {
           SecondsTimerText(
             enable: selected,
             seconds: exerciseValue,
+            pause: pause,
             onTimerEnd: onTimerEnd,
           ),
         const SizedBox(width: 8),
@@ -104,11 +111,13 @@ class _RestTimerWidget extends StatelessWidget {
   const _RestTimerWidget({
     required this.restTimer,
     this.selected = false,
+    this.pause = false,
     this.onTimerEnd,
   });
 
   final RestTimer restTimer;
   final bool selected;
+  final bool pause;
   final void Function()? onTimerEnd;
 
   @override
@@ -124,6 +133,7 @@ class _RestTimerWidget extends StatelessWidget {
         SecondsTimerText(
           enable: selected,
           seconds: duration,
+          pause: pause,
           onTimerEnd: onTimerEnd,
         ),
       ],
