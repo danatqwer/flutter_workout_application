@@ -8,3 +8,9 @@ sealed class WorkoutBlocEvent extends Equatable {
 }
 
 class WorkoutBlocInitializeEvent extends WorkoutBlocEvent {}
+
+class WorkoutBlocNextEvent extends WorkoutBlocEvent {}
+
+class WorkoutBlocPauseEvent extends WorkoutBlocEvent {}
+
+class WorkoutBlocResumeEvent extends WorkoutBlocEvent {}

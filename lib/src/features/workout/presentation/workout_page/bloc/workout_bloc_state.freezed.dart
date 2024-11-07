@@ -21,6 +21,7 @@ mixin _$WorkoutBlocState {
   Workout get workout => throw _privateConstructorUsedError;
   int get selectedIndex => throw _privateConstructorUsedError;
   bool get workoutStarted => throw _privateConstructorUsedError;
+  bool get workoutPaused => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $WorkoutBlocStateCopyWith<WorkoutBlocState> get copyWith =>
@@ -38,7 +39,8 @@ abstract class $WorkoutBlocStateCopyWith<$Res> {
       String? errorMessage,
       Workout workout,
       int selectedIndex,
-      bool workoutStarted});
+      bool workoutStarted,
+      bool workoutPaused});
 }
 
 /// @nodoc
@@ -59,6 +61,7 @@ class _$WorkoutBlocStateCopyWithImpl<$Res, $Val extends WorkoutBlocState>
     Object? workout = null,
     Object? selectedIndex = null,
     Object? workoutStarted = null,
+    Object? workoutPaused = null,
   }) {
     return _then(_value.copyWith(
       loading: null == loading
@@ -81,6 +84,10 @@ class _$WorkoutBlocStateCopyWithImpl<$Res, $Val extends WorkoutBlocState>
           ? _value.workoutStarted
           : workoutStarted // ignore: cast_nullable_to_non_nullable
               as bool,
+      workoutPaused: null == workoutPaused
+          ? _value.workoutPaused
+          : workoutPaused // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -98,7 +105,8 @@ abstract class _$$WorkoutBlocStateImplCopyWith<$Res>
       String? errorMessage,
       Workout workout,
       int selectedIndex,
-      bool workoutStarted});
+      bool workoutStarted,
+      bool workoutPaused});
 }
 
 /// @nodoc
@@ -117,6 +125,7 @@ class __$$WorkoutBlocStateImplCopyWithImpl<$Res>
     Object? workout = null,
     Object? selectedIndex = null,
     Object? workoutStarted = null,
+    Object? workoutPaused = null,
   }) {
     return _then(_$WorkoutBlocStateImpl(
       loading: null == loading
@@ -139,6 +148,10 @@ class __$$WorkoutBlocStateImplCopyWithImpl<$Res>
           ? _value.workoutStarted
           : workoutStarted // ignore: cast_nullable_to_non_nullable
               as bool,
+      workoutPaused: null == workoutPaused
+          ? _value.workoutPaused
+          : workoutPaused // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -151,7 +164,8 @@ class _$WorkoutBlocStateImpl implements _WorkoutBlocState {
       this.errorMessage,
       this.workout = const Workout(id: '', name: '', items: []),
       this.selectedIndex = 0,
-      this.workoutStarted = false});
+      this.workoutStarted = false,
+      this.workoutPaused = false});
 
   @override
   @JsonKey()
@@ -167,10 +181,13 @@ class _$WorkoutBlocStateImpl implements _WorkoutBlocState {
   @override
   @JsonKey()
   final bool workoutStarted;
+  @override
+  @JsonKey()
+  final bool workoutPaused;
 
   @override
   String toString() {
-    return 'WorkoutBlocState(loading: $loading, errorMessage: $errorMessage, workout: $workout, selectedIndex: $selectedIndex, workoutStarted: $workoutStarted)';
+    return 'WorkoutBlocState(loading: $loading, errorMessage: $errorMessage, workout: $workout, selectedIndex: $selectedIndex, workoutStarted: $workoutStarted, workoutPaused: $workoutPaused)';
   }
 
   @override
@@ -185,12 +202,14 @@ class _$WorkoutBlocStateImpl implements _WorkoutBlocState {
             (identical(other.selectedIndex, selectedIndex) ||
                 other.selectedIndex == selectedIndex) &&
             (identical(other.workoutStarted, workoutStarted) ||
-                other.workoutStarted == workoutStarted));
+                other.workoutStarted == workoutStarted) &&
+            (identical(other.workoutPaused, workoutPaused) ||
+                other.workoutPaused == workoutPaused));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, loading, errorMessage, workout,
-      selectedIndex, workoutStarted);
+      selectedIndex, workoutStarted, workoutPaused);
 
   @JsonKey(ignore: true)
   @override
@@ -206,7 +225,8 @@ abstract class _WorkoutBlocState implements WorkoutBlocState {
       final String? errorMessage,
       final Workout workout,
       final int selectedIndex,
-      final bool workoutStarted}) = _$WorkoutBlocStateImpl;
+      final bool workoutStarted,
+      final bool workoutPaused}) = _$WorkoutBlocStateImpl;
 
   @override
   bool get loading;
@@ -218,6 +238,8 @@ abstract class _WorkoutBlocState implements WorkoutBlocState {
   int get selectedIndex;
   @override
   bool get workoutStarted;
+  @override
+  bool get workoutPaused;
   @override
   @JsonKey(ignore: true)
   _$$WorkoutBlocStateImplCopyWith<_$WorkoutBlocStateImpl> get copyWith =>

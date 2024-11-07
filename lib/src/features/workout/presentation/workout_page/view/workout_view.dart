@@ -5,6 +5,7 @@ import 'package:flutter_workout_application/src/features/workout/presentation/wi
 import 'package:flutter_workout_application/src/features/workout/presentation/widgets/error_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/widgets/loading_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc.dart';
+import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc_event.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc_state.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/workout_item_widget/workout_item_widget.dart';
 import 'package:go_router/go_router.dart';
@@ -80,7 +81,50 @@ class _Body extends StatelessWidget {
         horizontal: 8.0,
         vertical: 2.0,
       ),
-      child: _WorkoutItemsWidget(),
+      child: Column(
+        children: [
+          _WorkoutActions(),
+          _WorkoutItemsWidget(),
+        ],
+      ),
+    );
+  }
+}
+
+class _WorkoutActions extends StatelessWidget {
+  const _WorkoutActions();
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<WorkoutBloc>();
+
+    return BlocBuilder<WorkoutBloc, WorkoutBlocState>(
+      builder: (context, state) {
+        return SizedBox(
+          width: double.maxFinite,
+          child: Card(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8.0,
+              children: [
+                TextButton(
+                  onPressed: () => bloc.add(WorkoutBlocNextEvent()),
+                  child: const Text('Next'),
+                ),
+                state.workoutPaused
+                    ? TextButton(
+                        onPressed: () => bloc.add(WorkoutBlocResumeEvent()),
+                        child: const Text('Resume'),
+                      )
+                    : TextButton(
+                        onPressed: () => bloc.add(WorkoutBlocPauseEvent()),
+                        child: const Text('Pause'),
+                      ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -99,10 +143,12 @@ class _WorkoutItemsWidget extends StatelessWidget {
           return FailureText(state.errorMessage ?? '');
         }
 
+        final bloc = context.read<WorkoutBloc>();
         final workout = state.workout;
         final items = workout.items;
         int selectedIndex = state.selectedIndex;
         bool workoutStarted = state.workoutStarted;
+        bool workoutPaused = state.workoutPaused;
 
         if (items.isEmpty) {
           return const IsEmptyText('Workout items');
@@ -119,6 +165,8 @@ class _WorkoutItemsWidget extends StatelessWidget {
               item: items[index],
               selected: selected,
               enabled: enabled,
+              pause: workoutPaused,
+              onTimerEnd: () => bloc.add(WorkoutBlocNextEvent()),
             );
           },
         );

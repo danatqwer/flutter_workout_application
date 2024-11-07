@@ -16,5 +16,6 @@ sealed class WorkoutBlocState with _$WorkoutBlocState {
     Workout workout,
     @Default(0) int selectedIndex,
     @Default(false) bool workoutStarted,
+    @Default(false) bool workoutPaused,
   }) = _WorkoutBlocState;
 }
