@@ -42,7 +42,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyBIhMs4nc-QsWI4K8055ySSIBZHK7Y3gXk',
-    appId: '1:362958169527:web:1f46bfc8f4c59d4b4fb432',
+    appId: '1:362958169527:web:77d3ff76e53bdf2e4fb432',
     messagingSenderId: '362958169527',
     projectId: 'workout-application-a1ff4',
     authDomain: 'workout-application-a1ff4.firebaseapp.com',
@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBLN4u7CiW9pxPpEn7PxDP1nh6kHqk6sSI',
-    appId: '1:362958169527:android:de17ea03ee5d60794fb432',
+    appId: '1:362958169527:android:2d00672a6347c1494fb432',
     messagingSenderId: '362958169527',
     projectId: 'workout-application-a1ff4',
     storageBucket: 'workout-application-a1ff4.firebasestorage.app',
@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBPWiv7dvh26dPEn0F7HPMPQvWwHF6sp2I',
-    appId: '1:362958169527:ios:2d02dc1e11fa8a474fb432',
+    appId: '1:362958169527:ios:99f13bf121013c9e4fb432',
     messagingSenderId: '362958169527',
     projectId: 'workout-application-a1ff4',
     storageBucket: 'workout-application-a1ff4.firebasestorage.app',
@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBPWiv7dvh26dPEn0F7HPMPQvWwHF6sp2I',
-    appId: '1:362958169527:ios:2d02dc1e11fa8a474fb432',
+    appId: '1:362958169527:ios:99f13bf121013c9e4fb432',
     messagingSenderId: '362958169527',
     projectId: 'workout-application-a1ff4',
     storageBucket: 'workout-application-a1ff4.firebasestorage.app',
@@ -77,7 +77,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyBIhMs4nc-QsWI4K8055ySSIBZHK7Y3gXk',
-    appId: '1:362958169527:web:596affff8f11c15f4fb432',
+    appId: '1:362958169527:web:5aadc0d5a09b15164fb432',
     messagingSenderId: '362958169527',
     projectId: 'workout-application-a1ff4',
     authDomain: 'workout-application-a1ff4.firebaseapp.com',

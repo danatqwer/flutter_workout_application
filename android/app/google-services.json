@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:362958169527:android:de17ea03ee5d60794fb432",
+        "mobilesdk_app_id": "1:362958169527:android:2d00672a6347c1494fb432",
         "android_client_info": {
-          "package_name": "com.dq.app"
+          "package_name": "com.example.flutter_workout_application"
         }
       },
       "oauth_client": [],
