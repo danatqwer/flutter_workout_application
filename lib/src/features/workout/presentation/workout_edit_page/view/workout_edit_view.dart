@@ -9,6 +9,7 @@ import 'package:flutter_workout_application/src/features/workout/presentation/wi
 import 'package:flutter_workout_application/src/features/workout/presentation/widgets/loading_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/workout_item_widget/workout_item_widget.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WorkoutEditView extends StatelessWidget {
   const WorkoutEditView({super.key});
@@ -33,7 +34,13 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: const _WorkoutNameWidget(),
       leading: BackButton(
-        onPressed: () => context.go(MainRoutes.workoutPath),
+        onPressed: () async {
+          final sharedPreferences = await SharedPreferences.getInstance();
+          sharedPreferences.remove('workout_edit');
+          if (context.mounted) {
+            context.go(MainRoutes.workoutPath);
+          }
+        },
       ),
       actions: [
         BlocListener<WorkoutEditBloc, WorkoutEditBlocState>(
@@ -91,9 +98,9 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
     if (state is WorkoutEditBlocDeleteState) {
       final String message;
       if (state.loading) {
-        message = 'Saving...';
+        message = 'Deleting...';
       } else if (state.errorMessage != null) {
-        message = 'Saving failed: ${state.errorMessage}';
+        message = 'Delete failed: ${state.errorMessage}';
       } else if (state.successMessage != null) {
         message = state.successMessage!;
       } else {
