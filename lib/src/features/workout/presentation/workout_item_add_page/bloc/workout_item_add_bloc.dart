@@ -28,10 +28,6 @@ class WorkoutItemAddBloc
     try {
       final workout = await getWorkoutEditUseCase.execute();
 
-      if (workout == null) {
-        throw ArgumentError.notNull('workout');
-      }
-
       workout.items.add(event.workoutItem);
       await setWorkoutEditUseCase.execute(workout);
 

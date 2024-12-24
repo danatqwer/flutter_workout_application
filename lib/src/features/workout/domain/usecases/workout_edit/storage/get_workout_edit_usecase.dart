@@ -8,7 +8,7 @@ class GetWorkoutEditUseCase {
     required this.workoutEditRepository,
   });
 
-  Future<Workout?> execute() async {
+  Future<Workout> execute() async {
     final workout = await workoutEditRepository.get();
     return workout;
   }

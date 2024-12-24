@@ -110,6 +110,7 @@ abstract class MainRouterPages {
       builder: (context, state) => BlocProvider(
         create: (context) => WorkoutBloc(
           getWorkoutUseCase: _getWorkoutUseCase,
+          setWorkoutEditUseCase: _setWorkoutEditUseCase,
         ),
         child: const WorkoutView(),
       ),

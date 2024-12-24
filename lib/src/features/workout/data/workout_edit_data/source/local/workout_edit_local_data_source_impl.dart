@@ -16,12 +16,12 @@ class WorkoutEditLocalDataSourceImpl implements WorkoutEditLocalDataSource {
   }
 
   @override
-  Future<Workout?> get() async {
+  Future<Workout> get() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final workoutString = sharedPreferences.getString(_key);
 
     if (workoutString == null) {
-      return null;
+      return throw ArgumentError.notNull('Workout string');
     }
 
     final workoutMap = jsonDecode(workoutString) as Map<String, dynamic>;

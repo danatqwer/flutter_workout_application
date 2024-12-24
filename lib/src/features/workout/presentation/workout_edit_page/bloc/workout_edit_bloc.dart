@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/delete_workout_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/set_workout_usecase.dart';
@@ -45,12 +44,7 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
 
   Future<void> _onInitializeEvent(Emitter<WorkoutEditBlocState> emit) async {
     try {
-      Workout? workout = await getWorkoutEditUseCase.execute();
-
-      if (workout == null) {
-        workout = await getWorkoutUseCase.execute();
-        await setWorkoutEditUseCase.execute(workout);
-      }
+      final workout = await getWorkoutEditUseCase.execute();
 
       emit(WorkoutEditBlocInitializeState(
         loading: false,

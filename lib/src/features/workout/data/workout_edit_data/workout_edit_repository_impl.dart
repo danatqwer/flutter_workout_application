@@ -15,7 +15,7 @@ class WorkoutEditRepositoryImpl implements WorkoutEditRepository {
   }
 
   @override
-  Future<Workout?> get() async {
+  Future<Workout> get() async {
     return await _local.get();
   }
 
