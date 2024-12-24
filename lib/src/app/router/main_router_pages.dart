@@ -30,8 +30,7 @@ import 'package:flutter_workout_application/src/features/workout/presentation/wo
 import 'package:go_router/go_router.dart';
 
 abstract class MainRouterPages {
-  /// Workout
-  // Dependencies
+  /// Dependency
   static final _workoutRepository = WorkoutRepositoryImpl(
     remote: WorkoutRemoteDataSourceImpl(FirebaseFirestore.instance),
   );
@@ -42,7 +41,8 @@ abstract class MainRouterPages {
     local: WorkoutEditLocalDataSourceImpl(),
   );
 
-  // Use cases
+  /// Use case
+  // Workout
   static final _getWorkoutListUsecase = GetWorkoutListUsecase(
     workoutRepository: _workoutRepository,
   );
@@ -61,6 +61,7 @@ abstract class MainRouterPages {
     workoutRepository: _workoutRepository,
     workoutIdRepository: _workoutIdRepository,
   );
+  // Workout id
   static final _setWorkoutIdUsecase = SetWorkoutIdUsecase(
     workoutIdRepository: _workoutIdRepository,
   );
