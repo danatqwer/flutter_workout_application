@@ -11,7 +11,6 @@ import 'package:flutter_workout_application/src/features/workout/domain/usecases
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_list_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/set_workout_usecase.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/update_workout_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_edit/storage/clean_workout_edit_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_edit/storage/get_workout_edit_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_edit/storage/set_workout_edit_usecase.dart';
@@ -52,10 +51,6 @@ abstract class MainRouterPages {
   );
   static final _setWorkoutUseCase = SetWorkoutUseCase(
     workoutRepository: _workoutRepository,
-  );
-  static final _updateWorkoutUseCase = UpdateWorkoutUseCase(
-    workoutRepository: _workoutRepository,
-    workoutIdRepository: _workoutIdRepository,
   );
   static final _deleteWorkoutUseCase = DeleteWorkoutUseCase(
     workoutRepository: _workoutRepository,
