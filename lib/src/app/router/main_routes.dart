@@ -5,6 +5,7 @@ class MainRoutes {
   static const workoutAddName = 'workout_add';
   static const workoutEditName = 'workout_edit';
   static const workoutItemAddName = 'workout_item_add';
+  static const workoutItemEditName = 'workout_item_edit';
 
   // Path
   static const workoutListPath = '/$workoutListName';
@@ -14,4 +15,6 @@ class MainRoutes {
       '/$workoutListName/$workoutName/$workoutEditName';
   static const workoutItemAddPath =
       '/$workoutListName/$workoutName/$workoutEditName/$workoutItemAddName';
+  static const workoutItemEditPath =
+      '/$workoutListName/$workoutName/$workoutEditName/$workoutItemEditName';
 }

@@ -1,31 +1,45 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/model/models.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_edit/storage/get_workout_edit_usecase.dart';
-import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_edit/storage/set_workout_edit_usecase.dart';
-import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_event.dart';
-import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_state.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_item/storage/get_workout_item_usecase.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_item/storage/remove_workout_item_usecase.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_item/storage/set_workout_item_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_item_edit_page/bloc/workout_item_edit_bloc_event.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_item_edit_page/bloc/workout_item_edit_bloc_state.dart';
 
 class WorkoutItemEditBloc
     extends Bloc<WorkoutItemEditBlocEvent, WorkoutItemEditBlocState> {
-  final GetWorkoutEditUseCase getWorkoutEditUseCase;
-  final SetWorkoutEditUseCase setWorkoutEditUseCase;
+  final SetWorkoutItemUsecase setWorkoutItemUsecase;
+  final GetWorkoutItemUsecase getWorkoutItemUsecase;
+  final RemoveWorkoutItemUsecase removeWorkoutItemUsecase;
 
-  WorkoutItemEditBloc(
-    super.initialState, {
-    required this.getWorkoutEditUseCase,
-    required this.setWorkoutEditUseCase,
-  }) {}
+  WorkoutItemEditBloc({
+    required this.setWorkoutItemUsecase,
+    required this.getWorkoutItemUsecase,
+    required this.removeWorkoutItemUsecase,
+  }) : super(const WorkoutItemEditBlocState()) {
+    on<WorkoutItemEditBlocEvent>(
+      (event, emit) async {
+        if (event is WorkoutItemEditBlocInitializeEvent) {
+          await _onInitializeEvent(emit);
+        } else if (event is WorkoutItemEditBlocSaveEvent) {
+          await _onSaveEvent(event, emit);
+        } else if (event is WorkoutItemEditBlocRemoveEvent) {
+          await _onRemoveEvent(emit);
+        }
+      },
+      transformer: sequential(),
+    );
+    add(WorkoutItemEditBlocInitializeEvent());
+  }
 
   Future<void> _onInitializeEvent(
       Emitter<WorkoutItemEditBlocState> emit) async {
     try {
-      final workout = await getWorkoutEditUseCase.execute();
+      final workoutItem = await getWorkoutItemUsecase.execute();
 
       emit(WorkoutItemEditBlocState(
         loading: false,
-        workoutItem: workout,
+        workoutItem: workoutItem,
       ));
     } catch (e) {
       emit(WorkoutItemEditBlocState(
@@ -35,12 +49,14 @@ class WorkoutItemEditBloc
     }
   }
 
-  Future<void> _onEditEvent(WorkoutEditBlocEvent event,
+  Future<void> _onSaveEvent(WorkoutItemEditBlocSaveEvent event,
       Emitter<WorkoutItemEditBlocState> emit) async {
     try {
+      await setWorkoutItemUsecase.execute(event.workoutItem);
+
       emit(WorkoutItemEditBlocState(
         loading: false,
-        workout: workout,
+        successMessage: 'Workout item saved.',
       ));
     } catch (e) {
       emit(WorkoutItemEditBlocState(
@@ -50,13 +66,13 @@ class WorkoutItemEditBloc
     }
   }
 
-  Future<void> _onDeleteEvent(Emitter<WorkoutItemEditBlocState> emit) async {
+  Future<void> _onRemoveEvent(Emitter<WorkoutItemEditBlocState> emit) async {
     try {
-      final workout = await getWorkoutEditUseCase.execute();
+      await removeWorkoutItemUsecase.execute();
 
       emit(WorkoutItemEditBlocState(
         loading: false,
-        workout: workout,
+        successMessage: "Workout item removed.",
       ));
     } catch (e) {
       emit(WorkoutItemEditBlocState(

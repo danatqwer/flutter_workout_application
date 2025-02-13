@@ -315,23 +315,39 @@ class _WorkoutItemsWidgetState extends State<_WorkoutItemsWidget> {
         final items = workout.items;
 
         return ReorderableListView.builder(
-          itemBuilder: (context, index) => WorkoutItemWidget(
-            key: ValueKey(index),
-            item: items[index],
-          ),
-          itemCount: items.length,
-          onReorder: (oldIndex, newIndex) {
-            setState(() {
-              if (oldIndex < newIndex) newIndex -= 1;
-              final item = items.removeAt(oldIndex);
-              items.insert(newIndex, item);
-            });
+          itemBuilder: (context, index) {
+            final workoutItem = items[index];
+
+            return MaterialButton(
+              key: ValueKey(index),
+              padding: EdgeInsets.all(0),
+              onPressed: () => _onWorkoutItemPressed(context, workoutItem),
+              child: WorkoutItemWidget(item: workoutItem),
+            );
           },
+          itemCount: items.length,
+          onReorder: (oldIndex, newIndex) =>
+              _onReorder(oldIndex, newIndex, items),
           footer: const _WorkoutItemAddButton(),
           shrinkWrap: true,
         );
       },
     );
+  }
+
+  void _onReorder(int oldIndex, int newIndex, List<WorkoutItem> items) {
+    setState(() {
+      if (oldIndex < newIndex) newIndex -= 1;
+      final item = items.removeAt(oldIndex);
+      items.insert(newIndex, item);
+    });
+  }
+
+  Future<void> _onWorkoutItemPressed(
+      BuildContext context, WorkoutItem workoutItem) async {
+    final bloc = context.read<WorkoutEditBloc>();
+    bloc.add(WorkoutEditBlocWorkoutItemPressedEvent(workoutItem.id));
+    context.go(MainRoutes.workoutItemEditPath);
   }
 }
 

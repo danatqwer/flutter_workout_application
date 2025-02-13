@@ -4,14 +4,17 @@ sealed class WorkoutItemEditBlocEvent {
   const WorkoutItemEditBlocEvent();
 }
 
-final class WorkoutItemEditBlocEditEvent extends WorkoutItemEditBlocEvent {
+final class WorkoutItemEditBlocInitializeEvent
+    extends WorkoutItemEditBlocEvent {}
+
+final class WorkoutItemEditBlocSaveEvent extends WorkoutItemEditBlocEvent {
   final WorkoutItem workoutItem;
 
-  const WorkoutItemEditBlocEditEvent(this.workoutItem);
+  const WorkoutItemEditBlocSaveEvent(this.workoutItem);
 }
 
-final class WorkoutItemEditBlocDeleteEvent extends WorkoutItemEditBlocEvent {
+final class WorkoutItemEditBlocRemoveEvent extends WorkoutItemEditBlocEvent {
   final WorkoutItem workoutItem;
 
-  const WorkoutItemEditBlocDeleteEvent(this.workoutItem);
+  const WorkoutItemEditBlocRemoveEvent(this.workoutItem);
 }

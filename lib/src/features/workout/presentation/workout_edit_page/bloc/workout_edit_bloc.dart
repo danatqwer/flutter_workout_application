@@ -6,6 +6,7 @@ import 'package:flutter_workout_application/src/features/workout/domain/usecases
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_edit/storage/clean_workout_edit_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_edit/storage/get_workout_edit_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_edit/storage/set_workout_edit_usecase.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_item_id/storage/set_workout_item_id_usecase.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_event.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_edit_page/bloc/workout_edit_bloc_state.dart';
 
@@ -16,6 +17,7 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
   final GetWorkoutEditUseCase getWorkoutEditUseCase;
   final SetWorkoutEditUseCase setWorkoutEditUseCase;
   final CleanWorkoutEditUseCase cleanWorkoutEditUseCase;
+  final SetWorkoutItemIdUsecase setWorkoutItemIdUsecase;
 
   WorkoutEditBloc({
     required this.getWorkoutUseCase,
@@ -24,6 +26,7 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
     required this.getWorkoutEditUseCase,
     required this.setWorkoutEditUseCase,
     required this.cleanWorkoutEditUseCase,
+    required this.setWorkoutItemIdUsecase,
   }) : super(const WorkoutEditBlocInitializeState()) {
     on<WorkoutEditBlocEvent>(
       (event, emit) async {
@@ -35,6 +38,8 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
           await _onSaveEvent(event, emit);
         } else if (event is WorkoutEditBlocDeleteEvent) {
           await _onDeleteEvent(event, emit);
+        } else if (event is WorkoutEditBlocWorkoutItemPressedEvent) {
+          await _onWorkoutItemPressed(event, emit);
         }
       },
       transformer: sequential(),
@@ -113,6 +118,21 @@ class WorkoutEditBloc extends Bloc<WorkoutEditBlocEvent, WorkoutEditBlocState> {
       ));
     } catch (e) {
       emit(WorkoutEditBlocDeleteState(
+        loading: false,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onWorkoutItemPressed(
+    WorkoutEditBlocWorkoutItemPressedEvent event,
+    Emitter<WorkoutEditBlocState> emit,
+  ) async {
+    try {
+      final workoutItemId = event.workoutItemId;
+      await setWorkoutItemIdUsecase.execute(workoutItemId);
+    } catch (e) {
+      emit(WorkoutEditBlocInitializeState(
         loading: false,
         errorMessage: e.toString(),
       ));

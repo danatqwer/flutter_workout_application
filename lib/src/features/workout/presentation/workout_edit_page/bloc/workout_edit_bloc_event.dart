@@ -23,3 +23,10 @@ final class WorkoutEditBlocDeleteEvent extends WorkoutEditBlocEvent {
 
   const WorkoutEditBlocDeleteEvent(this.workoutId);
 }
+
+final class WorkoutEditBlocWorkoutItemPressedEvent
+    extends WorkoutEditBlocEvent {
+  final String workoutItemId;
+
+  const WorkoutEditBlocWorkoutItemPressedEvent(this.workoutItemId);
+}
