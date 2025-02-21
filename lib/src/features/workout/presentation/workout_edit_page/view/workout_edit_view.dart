@@ -9,6 +9,7 @@ import 'package:flutter_workout_application/src/features/workout/presentation/wi
 import 'package:flutter_workout_application/src/features/workout/presentation/widgets/loading_text.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/view/widgets/workout_item_widget/workout_item_widget.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WorkoutEditView extends StatelessWidget {
   const WorkoutEditView({super.key});
@@ -33,7 +34,13 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: const _WorkoutNameWidget(),
       leading: BackButton(
-        onPressed: () => context.go(MainRoutes.workoutPath),
+        onPressed: () async {
+          final sharedPreferences = await SharedPreferences.getInstance();
+          sharedPreferences.remove('workout_edit');
+          if (context.mounted) {
+            context.go(MainRoutes.workoutPath);
+          }
+        },
       ),
       actions: [
         BlocListener<WorkoutEditBloc, WorkoutEditBlocState>(
@@ -91,9 +98,9 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
     if (state is WorkoutEditBlocDeleteState) {
       final String message;
       if (state.loading) {
-        message = 'Saving...';
+        message = 'Deleting...';
       } else if (state.errorMessage != null) {
-        message = 'Saving failed: ${state.errorMessage}';
+        message = 'Delete failed: ${state.errorMessage}';
       } else if (state.successMessage != null) {
         message = state.successMessage!;
       } else {
@@ -308,23 +315,39 @@ class _WorkoutItemsWidgetState extends State<_WorkoutItemsWidget> {
         final items = workout.items;
 
         return ReorderableListView.builder(
-          itemBuilder: (context, index) => WorkoutItemWidget(
-            key: ValueKey(index),
-            item: items[index],
-          ),
-          itemCount: items.length,
-          onReorder: (oldIndex, newIndex) {
-            setState(() {
-              if (oldIndex < newIndex) newIndex -= 1;
-              final item = items.removeAt(oldIndex);
-              items.insert(newIndex, item);
-            });
+          itemBuilder: (context, index) {
+            final workoutItem = items[index];
+
+            return MaterialButton(
+              key: ValueKey(index),
+              padding: EdgeInsets.all(0),
+              onPressed: () => _onWorkoutItemPressed(context, workoutItem),
+              child: WorkoutItemWidget(item: workoutItem),
+            );
           },
+          itemCount: items.length,
+          onReorder: (oldIndex, newIndex) =>
+              _onReorder(oldIndex, newIndex, items),
           footer: const _WorkoutItemAddButton(),
           shrinkWrap: true,
         );
       },
     );
+  }
+
+  void _onReorder(int oldIndex, int newIndex, List<WorkoutItem> items) {
+    setState(() {
+      if (oldIndex < newIndex) newIndex -= 1;
+      final item = items.removeAt(oldIndex);
+      items.insert(newIndex, item);
+    });
+  }
+
+  Future<void> _onWorkoutItemPressed(
+      BuildContext context, WorkoutItem workoutItem) async {
+    final bloc = context.read<WorkoutEditBloc>();
+    bloc.add(WorkoutEditBlocWorkoutItemPressedEvent(workoutItem.id));
+    context.go(MainRoutes.workoutItemEditPath);
   }
 }
 

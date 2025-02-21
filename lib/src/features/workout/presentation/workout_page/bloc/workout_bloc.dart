@@ -1,14 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout/storage/get_workout_usecase.dart';
+import 'package:flutter_workout_application/src/features/workout/domain/usecases/workout_edit/storage/set_workout_edit_usecase.dart';
 
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc_event.dart';
 import 'package:flutter_workout_application/src/features/workout/presentation/workout_page/bloc/workout_bloc_state.dart';
 
 class WorkoutBloc extends Bloc<WorkoutBlocEvent, WorkoutBlocState> {
   final GetWorkoutUseCase getWorkoutUseCase;
+  final SetWorkoutEditUseCase setWorkoutEditUseCase;
 
   WorkoutBloc({
     required this.getWorkoutUseCase,
+    required this.setWorkoutEditUseCase,
   }) : super(const WorkoutBlocState()) {
     on<WorkoutBlocEvent>(
       (event, emit) async {
@@ -30,6 +33,8 @@ class WorkoutBloc extends Bloc<WorkoutBlocEvent, WorkoutBlocState> {
   Future<void> _onInitializeWorkout(Emitter<WorkoutBlocState> emit) async {
     try {
       final workout = await getWorkoutUseCase.execute();
+      await setWorkoutEditUseCase.execute(workout);
+
       emit(state.copyWith(
         workoutStarted: true,
         loading: false,

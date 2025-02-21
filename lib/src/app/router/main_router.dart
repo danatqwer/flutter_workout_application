@@ -10,7 +10,8 @@ class MainRouter {
       MainRouterPages.workoutPageGoRoute(),
       MainRouterPages.workoutAddGoRoute(),
       MainRouterPages.workoutEditPageGoRoute(),
-      MainRouterPages.workoutItemAddPageGoRoute()
+      MainRouterPages.workoutItemAddPageGoRoute(),
+      MainRouterPages.workoutItemEditPageGoRoute(),
     ],
     initialLocation: MainRoutes.workoutListPath,
     onException: (context, state, router) => const ExceptionView(),
